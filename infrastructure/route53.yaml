@@ -1,0 +1,32 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Route 53 configuration for awsperiodictable.com
+
+Parameters:
+  HostedZoneId:
+    Type: String
+    Description: The Route 53 Hosted Zone ID for awsperiodictable.com
+  S3BucketWebsiteEndpoint:
+    Type: String
+    Description: The S3 bucket website endpoint (e.g., bucket-name.s3-website-region.amazonaws.com)
+
+Resources:
+  RootDomainRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      Name: awsperiodictable.com.
+      Type: A
+      AliasTarget:
+        HostedZoneId: Z21DNDUVLTQW6Q
+        DNSName: s3-website.eu-central-1.amazonaws.com.
+        EvaluateTargetHealth: false
+
+  WWWDomainRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      Name: www.awsperiodictable.com.
+      Type: CNAME
+      TTL: 300
+      ResourceRecords:
+        - awsperiodictable.com

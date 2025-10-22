@@ -1,0 +1,78 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Parameters:
+  Bucket:
+    Type: String
+  Key:
+    Type: String
+Resources:
+  ProductScraperRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: /
+      Policies:
+      - PolicyName: ProfuctScraperPolicy
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            Resource: arn:aws:logs:*:*:*
+          - Effect: Allow
+            Action:
+            - s3:PutObject
+            - s3:PutObjectAcl
+            Resource:
+              Fn::Sub: arn:aws:s3:::${Bucket}/${Key}
+  ProductScraper:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: periodic.lambda_handler
+      Runtime: python3.12
+      CodeUri: s3://awsperiodictable.com-lambda/4290a77ad6e616a0699cf1b20887e3ac
+      Timeout: 60
+      Role:
+        Fn::GetAtt:
+        - ProductScraperRole
+        - Arn
+      Environment:
+        Variables:
+          bucket:
+            Ref: Bucket
+          key:
+            Ref: Key
+  ProductScraperSchedule:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: ScheduledRule
+      ScheduleExpression: rate(1 day)
+      State: ENABLED
+      Targets:
+      - Arn:
+          Fn::GetAtt:
+          - ProductScraper
+          - Arn
+        Id: TargetFunctionV1
+  ProductScraperInvokePermissions:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName:
+        Ref: ProductScraper
+      Action: lambda:InvokeFunction
+      Principal: events.amazonaws.com
+      SourceArn:
+        Fn::GetAtt:
+        - ProductScraperSchedule
+        - Arn

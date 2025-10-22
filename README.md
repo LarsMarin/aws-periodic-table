@@ -17,3 +17,19 @@ WHERE:
   bucket - which S3 bucket would you like to copy the resulting HTML file to
   key - the name for the resulting HTML file (the S3 key)
 ```  
+
+Additional utilities:
+- fetch_all_services.py: Uses the AWS Price List API to produce all_aws_services.json.
+- fetch_products_directory.py: Uses the public aws.com directory API to produce products_services.json and can merge with all_aws_services.json.
+
+Examples:
+```
+# Fetch services from the AWS Price List API
+./fetch_all_services.py
+
+# Fetch products/services from aws.com directory (services + features)
+./fetch_products_directory.py
+
+# Merge both sources into a unified list
+./fetch_products_directory.py --merge  # writes merged_all_aws_services.json
+```

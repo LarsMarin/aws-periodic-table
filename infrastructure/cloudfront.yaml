@@ -1,0 +1,110 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: CloudFront distribution with SSL for awsperiodictable.com
+
+Parameters:
+  DomainName:
+    Type: String
+    Default: awsperiodictable.com
+  HostedZoneId:
+    Type: String
+    Description: Route 53 Hosted Zone ID
+  BucketName:
+    Type: String
+    Default: awsperiodictable.com
+  ObjectKey:
+    Type: String
+    Default: index.html
+
+Resources:
+  Certificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: !Ref DomainName
+      SubjectAlternativeNames:
+        - !Sub "www.${DomainName}"
+      ValidationMethod: DNS
+      DomainValidationOptions:
+        - DomainName: !Ref DomainName
+          HostedZoneId: !Ref HostedZoneId
+        - DomainName: !Sub "www.${DomainName}"
+          HostedZoneId: !Ref HostedZoneId
+
+  CloudFrontOAC:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name: !Sub "${DomainName}-OAC"
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        DefaultRootObject: !Ref ObjectKey
+        Aliases:
+          - !Ref DomainName
+          - !Sub "www.${DomainName}"
+        ViewerCertificate:
+          AcmCertificateArn: !Ref Certificate
+          SslSupportMethod: sni-only
+          MinimumProtocolVersion: TLSv1.2_2021
+        Origins:
+          - Id: S3Origin
+            DomainName: !Sub "${BucketName}.s3.eu-central-1.amazonaws.com"
+            OriginAccessControlId: !Ref CloudFrontOAC
+            S3OriginConfig: {}
+        DefaultCacheBehavior:
+          TargetOriginId: S3Origin
+          ViewerProtocolPolicy: redirect-to-https
+          AllowedMethods: [GET, HEAD, OPTIONS]
+          CachedMethods: [GET, HEAD]
+          Compress: true
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6  # CachingOptimized
+        HttpVersion: http2and3
+
+  BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref BucketName
+      PolicyDocument:
+        Statement:
+          - Sid: AllowCloudFrontOAC
+            Effect: Allow
+            Principal:
+              Service: cloudfront.amazonaws.com
+            Action: s3:GetObject
+            Resource: !Sub "arn:aws:s3:::${BucketName}/*"
+            Condition:
+              StringEquals:
+                AWS:SourceArn: !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/${CloudFrontDistribution}"
+
+  DNSRecordRoot:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      Name: !Ref DomainName
+      Type: A
+      AliasTarget:
+        HostedZoneId: Z2FDTNDATAQYW2  # CloudFront hosted zone ID
+        DNSName: !GetAtt CloudFrontDistribution.DomainName
+        EvaluateTargetHealth: false
+
+  DNSRecordWWW:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      Name: !Sub "www.${DomainName}"
+      Type: A
+      AliasTarget:
+        HostedZoneId: Z2FDTNDATAQYW2
+        DNSName: !GetAtt CloudFrontDistribution.DomainName
+        EvaluateTargetHealth: false
+
+Outputs:
+  CloudFrontURL:
+    Value: !GetAtt CloudFrontDistribution.DomainName
+  DistributionId:
+    Value: !Ref CloudFrontDistribution
