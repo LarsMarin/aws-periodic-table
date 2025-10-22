@@ -47,7 +47,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: periodic.lambda_handler
-      Runtime: python2.7
+      Runtime: python3.12
       CodeUri: ./periodic
       Timeout: 60
       Role: !GetAtt [ProductScraperRole, Arn]
