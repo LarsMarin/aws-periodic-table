@@ -1,43 +1,53 @@
 #!/usr/bin/env python3
-import sys
 import os
-
-# Mock environment variables
-os.environ['bucket'] = 'test-bucket'
-os.environ['key'] = 'test.html'
-
-# Change to periodic directory for file access
-os.chdir('../periodic')
-
-# Mock S3 before any imports
-import boto3
+import argparse
+import types
 from unittest.mock import MagicMock
 
+parser = argparse.ArgumentParser(description='Run periodic table generator locally and write output.html')
+parser.add_argument('--source', default=os.environ.get('PERIODIC_DATA_SOURCE', 'directory'), choices=['scrape','directory','merged'], help='Data source to use (default: directory)')
+parser.add_argument('--size', type=int, default=int(os.environ.get('PERIODIC_PRODUCTS_SIZE', '300')), help='Directory API size (default: 300)')
+args = parser.parse_args()
+
+# Set env variables expected by periodic.py (must be set BEFORE loading it)
+os.environ.setdefault('bucket', 'test-bucket')
+os.environ.setdefault('key', 'test.html')
+os.environ['PERIODIC_DATA_SOURCE'] = args.source
+os.environ['PERIODIC_PRODUCTS_SIZE'] = str(args.size)
+
+# Work inside periodic directory so template path resolves
+os.chdir('../periodic')
+
+# Prepare mocked S3 client so the code writes to a local file instead of AWS
 mock_s3 = MagicMock()
+
 def save_html(**kwargs):
-    print("Saving HTML to output.html...")
-    with open('../output.html', 'w', encoding='utf-8') as f:
-        f.write(kwargs['Body'])
-    print(f"Saved {len(kwargs['Body'])} bytes")
+    out_path = '../output.html'
+    print(f"Saving HTML to {out_path} (source={args.source}, size={args.size}) ...")
+    body = kwargs.get('Body', '')
+    if isinstance(body, bytes):
+        body = body.decode('utf-8', errors='ignore')
+    with open(out_path, 'w', encoding='utf-8') as f:
+        f.write(body)
+    print(f"Saved {len(body)} bytes")
     return {}
+
 mock_s3.put_object = save_html
 
-# Load the periodic.py file directly with __file__ set
-code = open('periodic.py').read()
-exec(code, {'__file__': os.path.abspath('periodic.py'), '__name__': '__main__'})
+# Load periodic.py as a module and override its S3 client
+with open('periodic.py', 'r', encoding='utf-8') as fh:
+    code = fh.read()
 
-# Get the lambda_handler from the executed code
-import types
 module = types.ModuleType('periodic')
 module.__file__ = os.path.abspath('periodic.py')
 exec(code, module.__dict__)
 
-# Replace s3 in the module
+# Replace S3 client in the loaded module
 module.s3 = mock_s3
 
 try:
     module.lambda_handler({}, None)
-    print("\nSuccess! Check output.html")
+    print("\nSuccess! Open output.html in your browser.")
 except Exception as e:
     print(f"\nError: {e}")
     import traceback
