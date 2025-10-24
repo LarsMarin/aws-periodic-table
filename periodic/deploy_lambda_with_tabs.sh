@@ -13,7 +13,8 @@ echo "Erstelle Lambda-Deployment-Paket..."
 
 # Kopiere die notwendigen Dateien
 cp complete_lambda_handler.py "$TMP_DIR/periodic.py"
-cp template.mustache "$TMP_DIR/"
+# Verwende die aktualisierte Basisvorlage (inkl. Favicon) als Template für den Handler
+cp base_template.mustache "$TMP_DIR/template.mustache"
 
 # Wechsle ins temporäre Verzeichnis
 cd "$TMP_DIR"
