@@ -1,6 +1,8 @@
-# coding=utf-8
-import os, re, json, boto3, pystache
+import os, sys
+# Add lib directory to path
+sys.path.append(os.path.join(os.path.dirname(__file__), 'lib'))
 
+import re, json, boto3, pystache
 from bs4 import BeautifulSoup
 from requests import get
 

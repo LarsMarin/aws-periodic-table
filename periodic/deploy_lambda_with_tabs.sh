@@ -21,7 +21,8 @@ cd "$TMP_DIR"
 
 # Installiere Abhängigkeiten
 echo "Installiere Abhängigkeiten..."
-pip install -t . pystache beautifulsoup4 requests
+mkdir -p lib
+pip install -t lib pystache beautifulsoup4 requests
 
 # Erstelle ZIP-Archiv
 echo "Erstelle ZIP-Archiv..."

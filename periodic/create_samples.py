@@ -11,7 +11,7 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 print(f"Ausgabeverzeichnis: {OUTPUT_DIR}")
 
 # Liste der Datenquellen
-SOURCES = ['scrape', 'directory', 'merged']
+SOURCES = ['scrape', 'directory']
 DEFAULT_SOURCE = 'scrape'
 
 # Einfacher HTML-Generator ohne komplexe Formatierung

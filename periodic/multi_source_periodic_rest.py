@@ -1,7 +1,7 @@
 """
 # Funktion zum Sammeln von Daten aus der Verzeichnis-API
 def get_data_from_directory():
-    periodic = {'categories': [], 'title': "Periodic Table of Amazon Web Services (Directory API)",
+    periodic = {'categories': [], 'title': "Periodic Table of Amazon Web Services",
               'description': "AWS Services from Directory API"}
     
     # Symbols already used
@@ -157,7 +157,7 @@ def get_data_from_directory():
 
 # Funktion zum Sammeln von Daten durch Scraping
 def get_data_from_scrape():
-    periodic = {'categories': [], 'title': "Periodic Table of Amazon Web Services (Scrape)",
+    periodic = {'categories': [], 'title': "Periodic Table of Amazon Web Services",
               'description': "AWS Services from Web Scraping"}
     
     # Symbols already used

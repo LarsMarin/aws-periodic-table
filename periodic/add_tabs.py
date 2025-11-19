@@ -133,12 +133,7 @@ def add_tabs_to_html(source_id):
     # Parse HTML mit BeautifulSoup
     soup = BeautifulSoup(html_content, 'html.parser')
     
-    # Titel aktualisieren
-    title_tag = soup.find('title')
-    if title_tag:
-        title_tag.string = f"Periodic Table of Amazon Web Services ({source_label})"
-    
-    # CSS für Tab-Navigation und verbesserte Legende hinzufügen
+    # CSS für Tab-Navigation hinzufügen
     style_tag = soup.find('style')
     if style_tag:
         style_tag.string = style_tag.string + TABS_CSS + LEGEND_CSS
@@ -150,13 +145,9 @@ def add_tabs_to_html(source_id):
         tabs_html += f'<a href="index_{tab_id}.html" class="tab {active}">{tab_label}</a>'
     tabs_html += '</div>'
     
-    # Source-Info HTML erstellen
-    source_info_html = f'<div class="source-info">Datenquelle: <strong>{source_label}</strong></div>'
-    
     # Wrapper finden und Tabs hinzufügen
     wrapper = soup.find('div', class_='Wrapper')
     if wrapper:
-        wrapper.insert(0, BeautifulSoup(source_info_html, 'html.parser'))
         wrapper.insert(0, BeautifulSoup(tabs_html, 'html.parser'))
     
     # Speichern der modifizierten HTML-Datei

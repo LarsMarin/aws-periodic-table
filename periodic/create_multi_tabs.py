@@ -14,8 +14,7 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 # Unterstützte Datenquellen und ihre Labels
 SOURCES = {
     'scrape': 'Web Scraping',
-    'directory': 'Directory API',
-    'merged': 'Combined Sources'
+    'directory': 'Directory API'
 }
 
 DEFAULT_SOURCE = 'scrape'
@@ -76,11 +75,6 @@ for source_id, source_label in SOURCES.items():
     if css_style:
         css_style.string = css_style.string + TABS_CSS
     
-    # Titel aktualisieren
-    title_tag = soup.find('title')
-    if title_tag:
-        title_tag.string = f"Periodic Table of Amazon Web Services ({source_label})"
-    
     # Finde den Wrapper für die Tabelle
     wrapper = soup.find('div', class_='Wrapper')
     if not wrapper:
@@ -94,11 +88,7 @@ for source_id, source_label in SOURCES.items():
         tabs_html += f'<a href="index_{tab_id}.html" class="tab {active}">{tab_label}</a>'
     tabs_html += '</div>'
     
-    # Erstelle Source-Info HTML
-    source_info_html = f'<div class="source-info">Datenquelle: <strong>{source_label}</strong></div>'
-    
-    # Füge Tab-Navigation und Source-Info am Anfang des Wrappers ein
-    wrapper.insert(0, BeautifulSoup(source_info_html, 'html.parser'))
+    # Füge Tab-Navigation am Anfang des Wrappers ein
     wrapper.insert(0, BeautifulSoup(tabs_html, 'html.parser'))
     
     # Speichere die modifizierte HTML-Datei

@@ -1,1 +1,134 @@
-"#!/bin/bash\n\n# Skript zum Generieren von HTML-Dateien für verschiedene Datenquellen\n\n# Verzeichnis für Ausgabedateien\nOUTPUT_DIR=\"../output\"\nmkdir -p \"$OUTPUT_DIR\"\n\n# Aufruf des Python-Skripts für verschiedene Datenquellen\necho \"Generiere Tabelle für Web Scraping (ca. 100 Services)...\"\nPERIODIC_DATA_SOURCE=scrape PERIODIC_PRODUCTS_SIZE=300 OUTPUT_PATH=\"$OUTPUT_DIR/raw_scrape.html\" python3 local_periodic.py\n\necho \"Generiere Tabelle für Directory API (ca. 300 Services)...\"\nPERIODIC_DATA_SOURCE=directory PERIODIC_PRODUCTS_SIZE=300 OUTPUT_PATH=\"$OUTPUT_DIR/raw_directory.html\" python3 local_periodic.py\n\necho \"Generiere Tabelle für Merged Source...\"\nPERIODIC_DATA_SOURCE=merged PERIODIC_PRODUCTS_SIZE=300 OUTPUT_PATH=\"$OUTPUT_DIR/raw_merged.html\" python3 local_periodic.py\n\necho \"Füge Tab-Navigation zu den Tabellen hinzu...\"\n\n# Python-Skript zum Hinzufügen der Tab-Navigation\ncat > \"$OUTPUT_DIR/add_tabs.py\" << 'EOL'\n#!/usr/bin/env python3\nimport os\nimport sys\nfrom bs4 import BeautifulSoup\n\n# Verzeichnis für Ausgabedateien\nOUTPUT_DIR = os.path.dirname(os.path.abspath(__file__))\n\n# Unterstützte Datenquellen und ihre Labels\nSOURCES = {\n    'scrape': 'Web Scraping', \n    'directory': 'Directory API',\n    'merged': 'Combined Sources'\n}\n\nDEFAULT_SOURCE = 'scrape'\n\n# CSS für die Tab-Navigation\nTABS_CSS = """\n/* Tab Navigation Styles */\n.tabs {\n  display: flex;\n  justify-content: center;\n  margin-bottom: 20px;\n  padding: 10px;\n  background-color: #f5f5f5;\n  border-radius: 5px;\n}\n\n.tab {\n  padding: 10px 20px;\n  margin: 0 5px;\n  background-color: #333;\n  color: white;\n  border-radius: 5px;\n  font-weight: bold;\n  cursor: pointer;\n  transition: background-color 0.3s;\n}\n\n.tab:hover {\n  background-color: #555;\n}\n\n.tab.active {\n  background-color: #c92d39;\n}\n\n.source-info {\n  text-align: center;\n  margin-bottom: 20px;\n  font-size: 1.2vw;\n}\n"""\n\ndef add_tabs_to_html(source_id):\n    source_label = SOURCES.get(source_id, source_id.capitalize())\n    input_file = os.path.join(OUTPUT_DIR, f\"raw_{source_id}.html\")\n    output_file = os.path.join(OUTPUT_DIR, f\"index_{source_id}.html\")\n    \n    if not os.path.exists(input_file):\n        print(f\"Warnung: Datei {input_file} nicht gefunden\")\n        return False\n    \n    # Lese die HTML-Datei\n    with open(input_file, 'r', encoding='utf-8') as f:\n        html_content = f.read()\n    \n    # Parse HTML mit BeautifulSoup\n    soup = BeautifulSoup(html_content, 'html.parser')\n    \n    # Titel aktualisieren\n    title_tag = soup.find('title')\n    if title_tag:\n        title_tag.string = f\"Periodic Table of Amazon Web Services ({source_label})\"\n    \n    # CSS für Tab-Navigation hinzufügen\n    style_tag = soup.find('style')\n    if style_tag:\n        style_tag.string = style_tag.string + TABS_CSS\n    \n    # Tab-Navigation HTML erstellen\n    tabs_html = '<div class=\"tabs\">'\n    for tab_id, tab_label in SOURCES.items():\n        active = \"active\" if tab_id == source_id else \"\"\n        tabs_html += f'<a href=\"index_{tab_id}.html\" class=\"tab {active}\">{tab_label}</a>'\n    tabs_html += '</div>'\n    \n    # Source-Info HTML erstellen\n    source_info_html = f'<div class=\"source-info\">Datenquelle: <strong>{source_label}</strong></div>'\n    \n    # Wrapper finden und Tabs hinzufügen\n    wrapper = soup.find('div', class_='Wrapper')\n    if wrapper:\n        wrapper.insert(0, BeautifulSoup(source_info_html, 'html.parser'))\n        wrapper.insert(0, BeautifulSoup(tabs_html, 'html.parser'))\n    \n    # Speichern der modifizierten HTML-Datei\n    with open(output_file, 'w', encoding='utf-8') as f:\n        f.write(str(soup))\n    \n    print(f\"Tab-Navigation zu {source_id} hinzugefügt: {output_file}\")\n    return True\n\n# Tabs zu jeder Datenquelle hinzufügen\nfor source in SOURCES.keys():\n    add_tabs_to_html(source)\n\n# Erstellen der index.html (Kopie der Standardquelle)\ndefault_file = os.path.join(OUTPUT_DIR, f\"index_{DEFAULT_SOURCE}.html\")\nindex_file = os.path.join(OUTPUT_DIR, \"index.html\")\n\nif os.path.exists(default_file):\n    with open(default_file, 'r', encoding='utf-8') as src:\n        content = src.read()\n        with open(index_file, 'w', encoding='utf-8') as dest:\n            dest.write(content)\n    print(f\"Hauptindex erstellt: {index_file}\")\nelse:\n    print(f\"Fehler: Standarddatei {default_file} nicht gefunden\")\n\nprint(\"\\nVerarbeitung abgeschlossen!\")\nEOL\n\n# Führe das Python-Skript zur Tab-Integration aus\ncd \"$OUTPUT_DIR\" && python3 add_tabs.py\n\necho \"\\nDie HTML-Dateien wurden im Verzeichnis $OUTPUT_DIR erstellt:\"\nls -la \"$OUTPUT_DIR\"/*.html"
+#!/bin/bash
+
+# Skript zum Generieren von HTML-Dateien für verschiedene Datenquellen
+
+# Verzeichnis für Ausgabedateien
+OUTPUT_DIR="../output"
+mkdir -p "$OUTPUT_DIR"
+
+# Aufruf des Python-Skripts für verschiedene Datenquellen
+echo "Generiere Tabelle für Web Scraping (ca. 100 Services)..."
+PERIODIC_DATA_SOURCE=scrape PERIODIC_PRODUCTS_SIZE=300 OUTPUT_PATH="$OUTPUT_DIR/raw_scrape.html" python3 local_periodic.py
+
+echo "Generiere Tabelle für Directory API (ca. 300 Services)..."
+PERIODIC_DATA_SOURCE=directory PERIODIC_PRODUCTS_SIZE=300 OUTPUT_PATH="$OUTPUT_DIR/raw_directory.html" python3 local_periodic.py
+
+
+
+echo "Füge Tab-Navigation zu den Tabellen hinzu..."
+
+# Python-Skript zum Hinzufügen der Tab-Navigation
+cat > "$OUTPUT_DIR/add_tabs.py" << 'EOL'
+#!/usr/bin/env python3
+import os
+import sys
+from bs4 import BeautifulSoup
+
+# Verzeichnis für Ausgabedateien
+OUTPUT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Unterstützte Datenquellen und ihre Labels
+SOURCES = {
+    'scrape': 'Web Scraping', 
+    'directory': 'Directory API'
+}
+
+DEFAULT_SOURCE = 'scrape'
+
+# CSS für die Tab-Navigation
+TABS_CSS = """
+/* Tab Navigation Styles */
+.tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: #f5f5f5;
+  border-radius: 5px;
+}
+
+.tab {
+  padding: 10px 20px;
+  margin: 0 5px;
+  background-color: #333;
+  color: white;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.tab:hover {
+  background-color: #555;
+}
+
+.tab.active {
+  background-color: #c92d39;
+}
+"""
+
+def add_tabs_to_html(source_id):
+    source_label = SOURCES.get(source_id, source_id.capitalize())
+    input_file = os.path.join(OUTPUT_DIR, f"raw_{source_id}.html")
+    output_file = os.path.join(OUTPUT_DIR, f"index_{source_id}.html")
+    
+    if not os.path.exists(input_file):
+        print(f"Warnung: Datei {input_file} nicht gefunden")
+        return False
+    
+    # Lese die HTML-Datei
+    with open(input_file, 'r', encoding='utf-8') as f:
+        html_content = f.read()
+    
+    # Parse HTML mit BeautifulSoup
+    soup = BeautifulSoup(html_content, 'html.parser')
+    
+    # CSS für Tab-Navigation hinzufügen
+    style_tag = soup.find('style')
+    if style_tag:
+        style_tag.string = style_tag.string + TABS_CSS
+    
+    # Tab-Navigation HTML erstellen
+    tabs_html = '<div class="tabs">'
+    for tab_id, tab_label in SOURCES.items():
+        active = "active" if tab_id == source_id else ""
+        tabs_html += f'<a href="index_{tab_id}.html" class="tab {active}">{tab_label}</a>'
+    tabs_html += '</div>'
+    
+    # Wrapper finden und Tabs hinzufügen
+    wrapper = soup.find('div', class_='Wrapper')
+    if wrapper:
+        wrapper.insert(0, BeautifulSoup(tabs_html, 'html.parser'))
+    
+    # Speichern der modifizierten HTML-Datei
+    with open(output_file, 'w', encoding='utf-8') as f:
+        f.write(str(soup))
+    
+    print(f"Tab-Navigation zu {source_id} hinzugefügt: {output_file}")
+    return True
+
+# Tabs zu jeder Datenquelle hinzufügen
+for source in SOURCES.keys():
+    add_tabs_to_html(source)
+
+# Erstellen der index.html (Kopie der Standardquelle)
+default_file = os.path.join(OUTPUT_DIR, f"index_{DEFAULT_SOURCE}.html")
+index_file = os.path.join(OUTPUT_DIR, "index.html")
+
+if os.path.exists(default_file):
+    with open(default_file, 'r', encoding='utf-8') as src:
+        content = src.read()
+        with open(index_file, 'w', encoding='utf-8') as dest:
+            dest.write(content)
+    print(f"Hauptindex erstellt: {index_file}")
+else:
+    print(f"Fehler: Standarddatei {default_file} nicht gefunden")
+
+print("\nVerarbeitung abgeschlossen!")
+EOL
+
+# Führe das Python-Skript zur Tab-Integration aus
+cd "$OUTPUT_DIR" && python3 add_tabs.py
+
+echo "\nDie HTML-Dateien wurden im Verzeichnis $OUTPUT_DIR erstellt:"
+ls -la "$OUTPUT_DIR"/*.html

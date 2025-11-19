@@ -1,12 +1,14 @@
-# coding=utf-8
-import os, re, json, boto3, pystache
+import os, sys
+# Add lib directory to path
+sys.path.append(os.path.join(os.path.dirname(__file__), 'lib'))
 
+import re, json, boto3, pystache
 from bs4 import BeautifulSoup
 from requests import get
 
 # Optional: Wählen Sie Datenquelle und Verzeichnis-API-Größe über die Umgebung
 # Unterstützte Quellen: scrape, directory, merged (merged verhält sich derzeit wie directory)
-SUPPORTED_SOURCES = ['scrape', 'directory', 'merged']
+SUPPORTED_SOURCES = ['scrape', 'directory']
 DEFAULT_SOURCE = os.environ.get('PERIODIC_DATA_SOURCE', 'scrape')
 
 # AWS Products Directory endpoint template
