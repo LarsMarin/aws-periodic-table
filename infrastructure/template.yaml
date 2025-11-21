@@ -59,8 +59,8 @@ Resources:
   ProductScraperSchedule:
     Type: AWS::Events::Rule
     Properties:
-      Description: ScheduledRule
-      ScheduleExpression: rate(1 day)
+      Description: Monthly update on 1st day of month at 00:00 UTC
+      ScheduleExpression: cron(0 0 1 * ? *)
       State: ENABLED
       Targets:
         -
