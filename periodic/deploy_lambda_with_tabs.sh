@@ -12,9 +12,11 @@ mkdir -p "$TMP_DIR"
 echo "Erstelle Lambda-Deployment-Paket..."
 
 # Kopiere die notwendigen Dateien
-cp complete_lambda_handler.py "$TMP_DIR/periodic.py"
-# Verwende die aktualisierte Basisvorlage (inkl. Favicon) als Template für den Handler
-cp base_template.mustache "$TMP_DIR/template.mustache"
+cp lambda_handler.py "$TMP_DIR/periodic.py"
+# Verwende die aktualisierte Basisvorlage (inkl. Favicon und Tabs) als Template für den Handler
+cp base_template.mustache "$TMP_DIR/base_template.mustache"
+# Kopiere das img-Verzeichnis mit Logo
+cp -r img "$TMP_DIR/"
 
 # Wechsle ins temporäre Verzeichnis
 cd "$TMP_DIR"
@@ -54,3 +56,15 @@ echo "Die folgenden Dateien werden nach dem nächsten Aufruf in S3 erstellt:"
 echo "  - index.html (Hauptdatei, verweist auf die Standard-Datenquelle)"
 echo "  - index_scrape.html (Web Scraping-Version)"
 echo "  - index_directory.html (Directory API-Version)"
+
+# CloudFront Cache invalidieren
+echo ""
+echo "Invalidiere CloudFront Cache..."
+CLOUDFRONT_DISTRIBUTION_ID="ENS7ISNEWF40O"
+aws cloudfront create-invalidation \
+    --distribution-id "$CLOUDFRONT_DISTRIBUTION_ID" \
+    --paths "/index.html" "/index_scrape.html" "/index_directory.html" \
+    --query 'Invalidation.{Id:Id,Status:Status,CreateTime:CreateTime}' \
+    --output table
+
+echo "CloudFront Cache-Invalidierung gestartet!"

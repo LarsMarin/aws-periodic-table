@@ -6,207 +6,91 @@ import re, json, boto3, pystache
 from bs4 import BeautifulSoup
 from requests import get
 
-# Unterstützte Datenquellen und ihre Labels
-SOURCES = {
-    'scrape': 'Web Scraping', 
-    'directory': 'Directory API'
-}
-
-DEFAULT_SOURCE = os.environ.get('PERIODIC_DATA_SOURCE', 'scrape')  # Default-Quelle festlegen
-PRODUCTS_SIZE = int(os.environ.get('PERIODIC_PRODUCTS_SIZE', '300'))
+# Optional: Wählen Sie Datenquelle und Verzeichnis-API-Größe über die Umgebung
+# Unterstützte Quellen: scrape, directory, merged (merged verhält sich derzeit wie directory)
+SUPPORTED_SOURCES = ['scrape', 'directory']
+DEFAULT_SOURCE = os.environ.get('PERIODIC_DATA_SOURCE', 'scrape')
 
 # AWS Products Directory endpoint template
 AWS_PRODUCTS_API = (
-    "https://aws.amazon.com/api/dirs/items/search?"
-    "item.directoryId=products-cards-interactive-aws-products-ams"
-    "&item.locale=en_US"
-    "&tags.id=GLOBAL%23local-tags-aws-products-type%23service%7CGLOBAL%23local-tags-aws-products-type%23feature"
-    "&sort_by=item.dateCreated&sort_order=asc"
-    f"&size={PRODUCTS_SIZE}"
+  "https://aws.amazon.com/api/dirs/items/search?"
+  "item.directoryId=products-cards-interactive-aws-products-ams"
+  "&item.locale=en_US"
+  "&tags.id=GLOBAL%23local-tags-aws-products-type%23service%7CGLOBAL%23local-tags-aws-products-type%23feature"
+  "&sort_by=item.dateCreated&sort_order=asc"
+  f"&size={int(os.environ.get('PERIODIC_PRODUCTS_SIZE', '300'))}"
 )
 
 # Common HTTP headers to mimic a browser (helps aws.com endpoints return full data)
 HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
-    'Accept': 'application/json, text/plain, */*',
-    'Accept-Language': 'en-US,en;q=0.9',
-    'Referer': 'https://aws.amazon.com/products/',
+  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+  'Accept': 'application/json, text/plain, */*',
+  'Accept-Language': 'en-US,en;q=0.9',
+  'Referer': 'https://aws.amazon.com/products/',
 }
 
-# CSS für die Tab-Navigation - optimal positioniert wie der Pfeil
-TABS_CSS = """
-/* Tab Navigation Styles - Positioniert direkt über dem Titel */
-.tabs {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 15px;
-  padding: 10px 0;
-  background-color: transparent;
-  position: relative;
-  gap: 15px;
-}
+bucket = os.environ.get('bucket', '')
+key = os.environ.get('key', 'index.html')
+key_prefix = key.rsplit('.', 1)[0] if '.' in key else key
 
-.tab {
-  padding: 12px 28px;
-  margin: 0;
-  background-color: #333;
-  color: white;
-  border-radius: 8px;
-  font-weight: bold;
-  font-size: 16px;
-  font-family: 'Yanone Kaffeesatz', Arial, sans-serif;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-decoration: none;
-  letter-spacing: 0.5px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  border: none;
-  position: relative;
-}
+# Initialisiere S3-Client
+s3 = boto3.client('s3')
 
-.tab:hover {
-  background-color: #555;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-}
-
-.tab.active {
-  background-color: #f86b00;
-  transform: translateY(0);
-  box-shadow: 0 3px 6px rgba(248,107,0,0.4);
-  position: relative;
-}
-
-/* Pfeil unter dem aktiven Button */
-.tab.active::after {
-  content: '';
-  position: absolute;
-  bottom: -20px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 0;
-  border-left: 12px solid transparent;
-  border-right: 12px solid transparent;
-  border-top: 15px solid #f86b00;
-}
-
-.source-info {
-  text-align: center;
-  margin-bottom: 20px;
-  font-size: 20px;
-  font-weight: bold;
-  color: #333;
-}
-"""
-
-# CSS für optimierte Legende mit mehr Platz
-LEGEND_CSS = """
-/* Legende mit mehr Platz für alle Einträge */
-.Legend {
-  grid-column-start: 4 !important;
-  grid-column-end: span 9 !important;
-  grid-row-start: 2 !important;
-  grid-row-end: span 2 !important;
-  transform: none !important;
-  margin-top: 0 !important;
-  margin-bottom: 10px !important;
-}
-
-ul.LegendLabels {
-  margin: 0 !important;
-  padding: 0 !important;
-  float: left !important;
-  font-size: 0.76vw !important;
-  font-weight: bold !important;
-  list-style: none !important;
-  /* 4 Spalten ohne Höhenbegrenzung */
-  column-count: 4 !important;
-  column-gap: 8px !important;
-  columns: 4 !important;
-  -moz-column-count: 4 !important;
-  -moz-columns: 4 !important;
-  -webkit-column-count: 4 !important;
-  -webkit-columns: 4 !important;
-  width: 100% !important;
-  height: auto !important; /* Automatische Höhe */
-  max-height: none !important; /* Keine Begrenzung */
-  overflow: visible !important; /* Überlauf erlauben */
-}
-
-ul.LegendLabels li {
-  line-height: 1.3 !important; /* Etwas kompakterer Zeilenabstand */
-  margin-bottom: 3px !important; /* Etwas geringerer Abstand */
-  white-space: nowrap !important;
-  overflow: visible !important;
-  display: block !important;
-  break-inside: avoid !important; /* Verhindert Trennung von Elementen */
-}
-
-ul.LegendLabels li span {
-  display: inline-block !important;
-  height: 0.8vw !important;
-  width: 0.8vw !important;
-  margin-right: 0.4vw !important;
-  margin-left: 0 !important;
-  vertical-align: middle !important;
-}
-"""# Reserve keywords for special cases, including single and 3-letter symbols
+# Reserve keywords for special cases, including single and 3-letter symbols
 reserved_symbols = {
-  "Mx"  : "Apache MXNet on AWS", 
-  "Tf"  : "TensorFlow on AWS", 
-  "Eks" : "Elastic Container Service for Kubernetes", 
-  "Ecs" : "Elastic Container Service", 
-  "Db"  : "DocumentDB", 
-  "53"  : "Route 53", 
-  "X"   : "X-Ray", 
-  "Ami" : "Deep Learning AMIs", 
-  "Phd" : "Personal Health Dashboard", 
-  "Cs"  : "CloudSearch", 
-  "L"   : "Lambda", 
-  "S3"  : "Simple Storage Service", 
-  "A"   : "Athena", 
-  "Vpc" : "VPC", 
-  "Ec2" : "EC2", 
-  "C9"  : "Cloud9", 
-  "Gt"  : "SageMaker Ground Truth", 
-  "Sns" : "Simple Notification Service", 
-  "Sqs" : "Simple Queue Service", 
-  "Hsm" : "CloudHSM", 
-  "Ebs" : "Elastic Block Store", 
-  "Cli" : "Command Line Interface", 
-  "Cf"  : "CloudFront", 
-  "Cm"  : "Cloud Map", 
-  "Gl"  : "S3 Glacier", 
-  "Sdk" : "Tools and SDKs", 
-  "Lx"  : "Lex", 
-  "M"   : "Macie", 
-  "K"   : "Managed Streaming for Kafka", 
-  "Emr" : "EMR", 
+  "Mx"  : "Apache MXNet on AWS",
+  "Tf"  : "TensorFlow on AWS",
+  "Eks" : "Elastic Container Service for Kubernetes",
+  "Ecs" : "Elastic Container Service",
+  "Db"  : "DocumentDB",
+  "53"  : "Route 53",
+  "X"   : "X-Ray",
+  "Ami" : "Deep Learning AMIs",
+  "Phd" : "Personal Health Dashboard",
+  "Cs"  : "CloudSearch",
+  "L"   : "Lambda",
+  "S3"  : "Simple Storage Service",
+  "A"   : "Athena",
+  "Vpc" : "VPC",
+  "Ec2" : "EC2",
+  "C9"  : "Cloud9",
+  "Gt"  : "SageMaker Ground Truth",
+  "Sns" : "Simple Notification Service",
+  "Sqs" : "Simple Queue Service",
+  "Hsm" : "CloudHSM",
+  "Ebs" : "Elastic Block Store",
+  "Cli" : "Command Line Interface",
+  "Cf"  : "CloudFront",
+  "Cm"  : "Cloud Map",
+  "Gl"  : "S3 Glacier",
+  "Sdk" : "Tools and SDKs",
+  "Lx"  : "Lex",
+  "M"   : "Macie",
+  "K"   : "Managed Streaming for Kafka",
+  "Emr" : "EMR",
   "F"   : "Fargate"
 }
 
-# For reverse lookup  
+# For reverse lookup
 reserved_services = dict(map(reversed, reserved_symbols.items()))
 
 # Some names are just to long to display, shorten them here
 preferred_names = {
-  "Elastic Container Service for Kubernetes": "ECS for Kubernetes", 
-  "Serverless Application Repository":"Serverless App Repo" 
+  "Elastic Container Service for Kubernetes": "ECS for Kubernetes",
+  "Serverless Application Repository":"Serverless App Repo"
 }
 
 # Default colors
-colors = ["#834187", "#878541", "#458741", "#874145", 
-          "#c92d39", "#3ac92d", "#2d44c9", "#c9762d", 
-          "#ef8d22", "#2c22ef", "#ef22e5", "#e5ef22", 
-          "#fcc438", "#8d38fc", "#fc38a7", "#a7fc38", 
-          "#7ab648", "#b6487a", "#b66548", "#48adb6", 
+colors = ["#834187", "#878541", "#458741", "#874145",
+          "#c92d39", "#3ac92d", "#2d44c9", "#c9762d",
+          "#ef8d22", "#2c22ef", "#ef22e5", "#e5ef22",
+          "#fcc438", "#8d38fc", "#fc38a7", "#a7fc38",
+          "#7ab648", "#b6487a", "#b66548", "#48adb6",
           "#3aa6dd", "#dd703a", "#ddc23a", "#a73add"]
 
 # Parse prefix and name
 def parse_name(name):
-    search = re.search( r"(AWS|Amazon)*\s*(.*)", name )
+    search = re.search(r"(AWS|Amazon)*\s*(.*)", name)
     prefix = search.group(1) or 'AWS'
     name = search.group(2)
     name = name.split("(",2)[0].strip()
@@ -217,13 +101,14 @@ def parse_name(name):
 # 2. Create a 2 letter symbol using first letters of words in name
 # 3. Create a 2 letter symbol using fallback sequence if needed (handles 1-letter names)
 def create_symbol(symbols, name):
+
     symbol = ""
     if name in reserved_services:
       # We have a specific symbol to use for this service
       symbol = reserved_services[name]
       symbols[symbol] = name
     else:
-      cleaned = re.sub(r"[&,-/.]","",name)
+      cleaned = re.sub(r"[&,-/.]", '', name)
       words = cleaned.split(' ')
       words = [ elem for elem in words if not elem.islower() ]
 
@@ -269,7 +154,7 @@ def create_symbol(symbols, name):
 
     return symbol
 
-# Funktion zum Sammeln von Daten aus der Directory API
+# Funktion zum Sammeln von Daten aus der Verzeichnis-API
 def get_data_from_directory():
     periodic = {'categories': [], 'title': "Periodic Table of Amazon Web Services",
               'description': "AWS Services from Directory API"}
@@ -288,7 +173,9 @@ def get_data_from_directory():
     except Exception as e:
         print("Failed to fetch directory API: %s" % e)
         data = {"items": []}
-    items = data.get('items', [])    # Group items into categories using aws-technology-categories (preferred),
+    items = data.get('items', [])
+
+    # Group items into categories using aws-technology-categories (preferred),
     # falling back to aws-tech-category / badge, else 'Other'.
     def friendly_from_slug(slug):
         mapping = {
@@ -420,8 +307,10 @@ def get_data_from_directory():
     for cat in categories_by_name.values():
         if cat['services']:
             periodic['categories'].append(cat)
-    
-    return periodic# Funktion zum Sammeln von Daten durch Scraping
+            
+    return periodic
+
+# Funktion zum Sammeln von Daten durch Scraping
 def get_data_from_scrape():
     periodic = {'categories': [], 'title': "Periodic Table of Amazon Web Services",
               'description': "AWS Services from Web Scraping"}
@@ -528,7 +417,9 @@ def get_data_from_scrape():
     except Exception as e:
         print(f"Error during scraping: {e}")
         
-    return periodic# Funktion zum Berechnen der Elementpositionen in der Tabelle
+    return periodic
+
+# Funktion zum Berechnen der Elementpositionen in der Tabelle
 def compute_positions(periodic):
     # Vertical order for topmost rows
     vlayout = [
@@ -590,116 +481,103 @@ def compute_positions(periodic):
     
     return periodic
 
-# Funktion zum Hinzufügen von Tabs zu HTML
-def add_tabs_to_html(html_content, source_id):
-    source_label = SOURCES.get(source_id, source_id.capitalize())
-    
-    # Parse HTML mit BeautifulSoup
-    soup = BeautifulSoup(html_content, 'html.parser')
-    
-    # Titel aktualisieren
-    title_tag = soup.find('title')
-    if title_tag:
-        title_tag.string = f"Periodic Table of Amazon Web Services ({source_label})"
-    
-    # CSS für Tab-Navigation und verbesserte Legende hinzufügen
-    style_tag = soup.find('style')
-    if style_tag:
-        style_tag.string = style_tag.string + TABS_CSS + LEGEND_CSS
-    
-    # Tab-Navigation HTML erstellen
-    tabs_html = '<div class="tabs">'
-    for tab_id, tab_label in SOURCES.items():
-        active = "active" if tab_id == source_id else ""
-        tabs_html += f'<a href="index_{tab_id}.html" class="tab {active}">{tab_label}</a>'
-    tabs_html += '</div>'
-    
-    # Finde Title und Grid divs
-    wrapper = soup.find('div', class_='Wrapper')
-    if wrapper:
-        title_div = wrapper.find('div', class_='Title')
-        grid_div = wrapper.find('div', class_='Grid')
-        
-        if title_div and grid_div:
-            # Füge Tabs zwischen Title und Grid ein
-            tabs_soup = BeautifulSoup(tabs_html, 'html.parser')
-            title_div.insert_after(tabs_soup)
-    
-    return str(soup)
-
-# Lambda-Handler-Funktion
+# Lambda-Handler-Funktion für multi_source_periodic.py
 def lambda_handler(event, context):
-    bucket = os.environ.get('bucket', '')
-    key_prefix = os.environ.get('key', 'index').rsplit('.', 1)[0]
+    # Generiere die HTML für jede unterstützte Datenquelle
+    html_files = {}
+    sources_meta = []
     
-    if not bucket:
-        print("Bucket name not provided in environment variables")
-        return {'statusCode': 400, 'body': 'Bucket name is required'}
+    # Generiere die Daten für alle Datenquellen
+    data_by_source = {}
     
-    s3 = boto3.client('s3')
+    # Daten aus Directory API (und Merged) holen
+    dir_data = get_data_from_directory()
+    data_by_source['directory'] = dir_data
+    data_by_source['merged'] = dir_data  # Merged verwendet aktuell die Directory-Daten
     
-    try:
-        # Daten für alle Quellen generieren
-        data_sources = {}
-        data_sources['scrape'] = get_data_from_scrape()
-        data_sources['directory'] = get_data_from_directory()
-        
-        # Template laden
-        template_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'template.mustache')
-        with open(template_path, 'r') as f:  
-            template = f.read()
-        
-        # HTML für jede Quelle generieren und mit Tabs versehen
-        for source_id, periodic_data in data_sources.items():
-            # Positionen berechnen
-            periodic_data = compute_positions(periodic_data)
+    # Daten aus Web Scraping holen
+    scrape_data = get_data_from_scrape()
+    data_by_source['scrape'] = scrape_data
+    
+    # Für jede Datenquelle eine HTML-Datei generieren
+    for source in SUPPORTED_SOURCES:
+        if source in data_by_source:
+            # Berechne Positionen für die Elemente
+            periodic_data = compute_positions(data_by_source[source])
             
-            # HTML rendern
-            html = pystache.render(template, periodic_data)
+            # Dateinamen für diese Quelle festlegen
+            filename = f"{key_prefix}_{source}.html"
+            base_filename = os.path.basename(filename)
             
-            # Tabs hinzufügen
-            html_with_tabs = add_tabs_to_html(html, source_id)
+            # Metadaten für Tab-Navigation aufbauen
+            source_label = {
+                'scrape': "Web Scraping",
+                'directory': "Directory API",
+                'merged': "Combined Sources"
+            }.get(source, source.capitalize())
             
-            # HTML für diese Quelle zu S3 hochladen
-            filename = f"index_{source_id}.html"
-            s3.put_object(
-                ContentType='text/html',
-                Body=html_with_tabs,
-                Bucket=bucket,
-                Key=filename
-            )
-            print(f"HTML für {source_id} hochgeladen: {filename}")
-        
-        # Die Hauptindex-Datei (standardmäßig die Scraping-Version)
-        default_source = DEFAULT_SOURCE
-        default_file = f"index_{default_source}.html"
-        
-        # Kopiere den Inhalt der Default-Quelle als Hauptindex
-        s3_response = s3.get_object(Bucket=bucket, Key=default_file)
-        default_html = s3_response['Body'].read().decode('utf-8')
-        
-        # Hauptindex hochladen
-        main_index_key = key_prefix + ".html"
-        s3.put_object(
-            ContentType='text/html',
-            Body=default_html,
-            Bucket=bucket,
-            Key=main_index_key
-        )
-        print(f"Hauptindex hochgeladen: {main_index_key}")
-        
-        return {
-            'statusCode': 200,
-            'body': f"Erfolgreich: Periodentabellen mit Tabs wurden nach S3 hochgeladen"
-        }
-        
-    except Exception as e:
-        print(f"Fehler: {str(e)}")
-        return {
-            'statusCode': 500,
-            'body': f"Fehler: {str(e)}"
-        }
+            sources_meta.append({
+                'filename': base_filename, 
+                'label': source_label,
+                'active': source == DEFAULT_SOURCE  # Standardquelle ist aktiv
+            })
+            
+            # Erweiterung des Datenkontextes für Templating
+            periodic_data['data_sources'] = sources_meta  # Tab-Informationen
+            periodic_data['current_source'] = source_label  # Aktuelle Quelle
+            
+            # Template laden und HTML rendern
+            template_path = os.path.join(os.path.dirname(__file__), 'base_template.mustache')
+            with open(template_path, 'r') as f:  
+                template = f.read()
+                html = pystache.render(template, periodic_data)
+                html_files[filename] = html
+    
+    # Speichern der generierten HTML-Dateien
+    for filename, html_content in html_files.items():
+        if bucket:  # Wenn S3-Bucket konfiguriert ist
+            try:
+                s3.put_object(
+                    ContentType='text/html',
+                    Body=html_content,
+                    Bucket=bucket,
+                    Key=filename)
+                print(f"Datei {filename} wurde in S3-Bucket {bucket} hochgeladen")
+            except Exception as e:
+                print(f"Fehler beim Hochladen der Datei {filename} in S3: {e}")
+        else:  # Lokale Speicherung, wenn kein Bucket konfiguriert ist
+            try:
+                # Stellen Sie sicher, dass das Zielverzeichnis existiert
+                output_dir = os.path.dirname(filename)
+                if output_dir and not os.path.exists(output_dir):
+                    os.makedirs(output_dir)
+                
+                with open(filename, 'w', encoding='utf-8') as f:
+                    f.write(html_content)
+                print(f"Datei {filename} wurde lokal gespeichert")
+            except Exception as e:
+                print(f"Fehler beim lokalen Speichern der Datei {filename}: {e}")
+    
+    # Zusätzlich eine index.html-Datei erstellen, die auf die Standardquelle verweist
+    if DEFAULT_SOURCE in data_by_source:
+        # Index ist identisch mit der HTML-Datei der Standardquelle, aber mit angepasstem Titel
+        default_file = f"{key_prefix}_{DEFAULT_SOURCE}.html"
+        if default_file in html_files:
+            if bucket:
+                s3.put_object(
+                    ContentType='text/html',
+                    Body=html_files[default_file],
+                    Bucket=bucket,
+                    Key=key)  # Standarddateiname (meistens index.html)
+                print(f"Standarddatei {key} wurde in S3-Bucket {bucket} hochgeladen")
+            else:
+                try:
+                    with open(key, 'w', encoding='utf-8') as f:
+                        f.write(html_files[default_file])
+                    print(f"Standarddatei {key} wurde lokal gespeichert")
+                except Exception as e:
+                    print(f"Fehler beim lokalen Speichern der Standarddatei {key}: {e}")
 
-# Für lokale Tests
+# Wenn das Skript direkt ausgeführt wird (nicht als Lambda)
 if __name__ == "__main__":
-    print(lambda_handler(None, None))
+    lambda_handler(None, None)
