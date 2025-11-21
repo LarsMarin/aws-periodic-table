@@ -55,7 +55,7 @@ def compute_positions(periodic):
             service['column'] = indices[count][1]
             count = count + 1
     
-    # Compute required grid rows for template (at least 18 to preserve original look)
-    periodic['grid_rows'] = max(18, max((pos[0] for pos in indices[:total_services]), default=18))
+    # Compute required grid rows for template based on actual content
+    periodic['grid_rows'] = max((pos[0] for pos in indices[:total_services]), default=10)
     
     return periodic

@@ -139,6 +139,35 @@
     {{#categories}}
     .{{class}} { color: {{color}}; border-color: {{color}}; }
     {{/categories}}
+    
+    .Footer {
+      margin-top: 40px;
+      padding: 20px 0;
+      border-top: 2px solid #f86b00;
+      text-align: center;
+    }
+    
+    .FooterContent {
+      font-size: 1rem;
+      color: #666;
+    }
+    
+    .FooterContent a {
+      color: #f86b00;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+    
+    .FooterContent a:hover {
+      color: #d45a00;
+      text-decoration: underline;
+    }
+    
+    .FooterSeparator {
+      margin: 0 15px;
+      color: #999;
+    }
   </style>
   <link href='https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz' rel='stylesheet' type='text/css'>
 </head>
@@ -146,7 +175,9 @@
   <div class="Container">
     <div class="Wrapper">
       <div class="Title">
-          <img src="img/tecracer_logo_rakete.png" alt="TecRacer Logo">
+          <a href="https://www.tecracer.com/" target="_blank" rel="noopener noreferrer">
+            <img src="img/tecracer_logo_rakete.png" alt="TecRacer Logo">
+          </a>
           <span>Periodic Table of Amazon Web Services</span>
       </div>
       <div class="Grid">
@@ -169,5 +200,14 @@
         {{/services}}
         {{/categories}}
       </div>
+      <footer class="Footer">
+        <div class="FooterContent">
+          <a href="https://www.tecracer.com/impressum/" target="_blank">Impressum</a>
+          <span class="FooterSeparator">|</span>
+          <a href="https://www.tecracer.com/datenschutz/" target="_blank">Datenschutz</a>
+        </div>
+      </footer>
     </div>
-<body>
+  </div>
+</body>
+</html>
