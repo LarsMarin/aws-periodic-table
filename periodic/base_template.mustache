@@ -17,11 +17,13 @@
   <style type="text/css">
     body {
       font-family: 'Yanone Kaffeesatz';
+      background-color: #ffffff;
+      color: #333;
     }
     
     a {
       text-decoration: none;
-      color: inherit;
+      color: #f86b00;
     }
     
     .Container {
@@ -45,17 +47,26 @@
       grid-column-end: span 16;
       grid-row-start:1;
       grid-row-end: span 2;
-      color: #c92d39;
-      font-size: 5.5vw;
+      color: #f86b00;
+      font-size: 3.5vw;
       font-weight: bold;
       text-align: center;
       margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .Title img {
+        height: 3vw;
+        width: auto;
     }
     
     .Legend {
       grid-column-start: 4;
       grid-column-end: span 9;
-      grid-row-start: 3;
+      grid-row-start: 2;
       grid-row-end: span 2;
     }
     
@@ -151,7 +162,7 @@
     }
     
     .tab.active {
-      background-color: #c92d39;
+      background-color: #f86b00;
     }
     
     .source-info {
@@ -164,7 +175,7 @@
     .{{class}} { color: {{color}}; border-color: {{color}}; }
     {{/categories}}
   </style>
-  <link href="https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz" rel="stylesheet">
+  <link href='https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz' rel='stylesheet' type='text/css'>
 </head>
 <body>
   <div class="Container">
@@ -183,6 +194,7 @@
       
       <div class="Grid">
         <div class="Title">
+          <img src="img/tecracer_logo_rakete.png" alt="TecRacer Logo">
           <span>{{title}}</span>
         </div>
         <div class="Legend">

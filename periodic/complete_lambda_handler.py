@@ -33,32 +33,36 @@ HEADERS = {
     'Referer': 'https://aws.amazon.com/products/',
 }
 
-# CSS für die Tab-Navigation - verbesserte Lesbarkeit
+# CSS für die Tab-Navigation - optimal positioniert wie der Pfeil
 TABS_CSS = """
-/* Tab Navigation Styles */
+/* Tab Navigation Styles - Positioniert direkt über dem Titel */
 .tabs {
   display: flex;
   justify-content: center;
-  margin-bottom: 25px;
-  padding: 15px;
-  background-color: #f5f5f5;
-  border-radius: 8px;
+  align-items: center;
+  margin-bottom: 15px;
+  padding: 10px 0;
+  background-color: transparent;
+  position: relative;
+  gap: 15px;
 }
 
 .tab {
-  padding: 15px 30px;
-  margin: 0 10px;
+  padding: 12px 28px;
+  margin: 0;
   background-color: #333;
   color: white;
   border-radius: 8px;
   font-weight: bold;
-  font-size: 18px;
+  font-size: 16px;
   font-family: 'Yanone Kaffeesatz', Arial, sans-serif;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
   text-decoration: none;
   letter-spacing: 0.5px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  border: none;
+  position: relative;
 }
 
 .tab:hover {
@@ -68,9 +72,24 @@ TABS_CSS = """
 }
 
 .tab.active {
-  background-color: #c92d39;
+  background-color: #f86b00;
   transform: translateY(0);
-  box-shadow: 0 3px 6px rgba(201,45,57,0.4);
+  box-shadow: 0 3px 6px rgba(248,107,0,0.4);
+  position: relative;
+}
+
+/* Pfeil unter dem aktiven Button */
+.tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-top: 15px solid #f86b00;
 }
 
 .source-info {
@@ -88,8 +107,8 @@ LEGEND_CSS = """
 .Legend {
   grid-column-start: 4 !important;
   grid-column-end: span 9 !important;
-  grid-row-start: 3 !important;
-  grid-row-end: span 3 !important; /* Eine Zeile mehr */
+  grid-row-start: 2 !important;
+  grid-row-end: span 2 !important;
   transform: none !important;
   margin-top: 0 !important;
   margin-bottom: 10px !important;
@@ -533,7 +552,7 @@ def compute_positions(periodic):
     ]
     
     indices = []
-    hrow = 1
+    hrow = 0
     for row in range(0,len(vlayout)):
         for col in range(0, len(vlayout[row])):
             if vlayout[row][col]:
@@ -593,15 +612,16 @@ def add_tabs_to_html(html_content, source_id):
         tabs_html += f'<a href="index_{tab_id}.html" class="tab {active}">{tab_label}</a>'
     tabs_html += '</div>'
     
-    # Source-Info HTML erstellen
-    # Source-Info HTML erstellen - REMOVED
-    # source_info_html = f'<div class="source-info">Datenquelle: <strong>{source_label}</strong></div>'
-    
-    # Wrapper finden und Tabs hinzufügen
+    # Finde Title und Grid divs
     wrapper = soup.find('div', class_='Wrapper')
     if wrapper:
-        # wrapper.insert(0, BeautifulSoup(source_info_html, 'html.parser'))
-        wrapper.insert(0, BeautifulSoup(tabs_html, 'html.parser'))
+        title_div = wrapper.find('div', class_='Title')
+        grid_div = wrapper.find('div', class_='Grid')
+        
+        if title_div and grid_div:
+            # Füge Tabs zwischen Title und Grid ein
+            tabs_soup = BeautifulSoup(tabs_html, 'html.parser')
+            title_div.insert_after(tabs_soup)
     
     return str(soup)
 

@@ -518,7 +518,7 @@ def main():
   ]
   
   indices = []
-  hrow = 1
+  hrow = 0
   for row in range(0,len(vlayout)):
     for col in range(0, len(vlayout[row])):
       if vlayout[row][col]:
