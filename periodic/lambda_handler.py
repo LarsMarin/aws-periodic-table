@@ -555,6 +555,7 @@ def lambda_handler(event, context):
             try:
                 s3.put_object(
                     ContentType='text/html',
+                    CacheControl='public, max-age=2592000',
                     Body=html_content,
                     Bucket=bucket,
                     Key=filename)
@@ -582,6 +583,7 @@ def lambda_handler(event, context):
             if bucket:
                 s3.put_object(
                     ContentType='text/html',
+                    CacheControl='public, max-age=2592000',
                     Body=html_files[default_file],
                     Bucket=bucket,
                     Key=key)  # Standarddateiname (meistens index.html)
