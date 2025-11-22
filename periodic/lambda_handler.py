@@ -6,6 +6,9 @@ import re, json, boto3, pystache, gzip
 from bs4 import BeautifulSoup
 from requests import get
 
+# Import embedded images
+from base64_images import LOGO_DATA_URI, FAVICON_DATA_URI
+
 # Optional: Wählen Sie Datenquelle und Verzeichnis-API-Größe über die Umgebung
 # Unterstützte Quellen: scrape, directory, merged (merged verhält sich derzeit wie directory)
 SUPPORTED_SOURCES = ['scrape', 'directory']
@@ -536,6 +539,8 @@ def lambda_handler(event, context):
             
             # Erweiterung des Datenkontextes für Templating
             periodic_data['data_sources'] = sources_meta  # Tab-Informationen
+            periodic_data['logo_data_uri'] = LOGO_DATA_URI  # Eingebettetes Logo
+            periodic_data['favicon_data_uri'] = FAVICON_DATA_URI  # Eingebettetes Favicon
             
             # Debug: Print sources_meta für diese Datei
             print(f"Generiere {filename} mit {len(sources_meta)} Tabs:")

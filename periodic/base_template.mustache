@@ -16,8 +16,12 @@
   {{#title}}<title>{{ title }}</title>{{/title}}
   {{#description}}<meta name="description" content="{{description}}"/>{{/description}}
   {{#website}}<link rel="canonical" href="{{website}}/"/>{{/website}}
-  <link rel="icon" type="image/png" href="https://www.tecracer.com/wp-content/uploads/2025/06/favicon.png">
-  <link rel="shortcut icon" type="image/png" href="https://www.tecracer.com/wp-content/uploads/2025/06/favicon.png">
+  <!-- Resource Hints for Performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+  
+  <link rel="icon" type="image/png" href="{{{favicon_data_uri}}}">
+  <link rel="shortcut icon" type="image/png" href="{{{favicon_data_uri}}}">
 
   {{ > google }}
   {{ > opengraph }}
@@ -111,6 +115,11 @@
       margin-left: 0;
       vertical-align: middle;
     }
+    
+    /* Category color classes for legend spans */
+    {{#categories}}
+    .legend-{{class}} { background: {{color}} !important; }
+    {{/categories}}
     
     .Service {
       width: 4vw;
@@ -245,7 +254,7 @@
       color: #999;
     }
   </style>
-  <link href='https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz&display=swap' rel='stylesheet' type='text/css'>
 </head>
 <body>
   <div class="Container">
@@ -253,7 +262,7 @@
       <!-- Header -->
       <div class="Header">
         <a href="https://www.tecracer.com/" target="_blank" rel="noopener noreferrer">
-          <img src="img/tecracer_logo_rakete.png" alt="TecRacer Logo">
+          <img src="{{{logo_data_uri}}}" alt="TecRacer Logo" width="120" height="auto">
         </a>
         <span>Periodic Table of Amazon Web Services</span>
       </div>
@@ -269,7 +278,7 @@
         <div class="Legend">
           <ul class="LegendLabels">
             {{#categories}}
-            <li><span style='background: {{color}};'></span>{{name}}</li>
+            <li><span class="legend-{{class}}"></span>{{name}}</li>
             {{/categories}}
           </ul>
         </div>
