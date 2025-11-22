@@ -2,7 +2,7 @@ import os, sys
 # Add lib directory to path
 sys.path.append(os.path.join(os.path.dirname(__file__), 'lib'))
 
-import re, json, boto3, pystache
+import re, json, boto3, pystache, gzip
 from bs4 import BeautifulSoup
 from requests import get
 
@@ -553,13 +553,21 @@ def lambda_handler(event, context):
     for filename, html_content in html_files.items():
         if bucket:  # Wenn S3-Bucket konfiguriert ist
             try:
+                # Komprimiere HTML mit Gzip für schnellere Übertragung
+                html_bytes = html_content.encode('utf-8')
+                compressed_html = gzip.compress(html_bytes, compresslevel=9)
+                
                 s3.put_object(
                     ContentType='text/html',
+                    ContentEncoding='gzip',
                     CacheControl='public, max-age=2592000',
-                    Body=html_content,
+                    Body=compressed_html,
                     Bucket=bucket,
                     Key=filename)
-                print(f"Datei {filename} wurde in S3-Bucket {bucket} hochgeladen")
+                
+                # Berechne Komprimierungsrate
+                compression_ratio = (1 - len(compressed_html) / len(html_bytes)) * 100
+                print(f"Datei {filename} wurde in S3-Bucket {bucket} hochgeladen (komprimiert: {compression_ratio:.1f}% kleiner)")
             except Exception as e:
                 print(f"Fehler beim Hochladen der Datei {filename} in S3: {e}")
         else:  # Lokale Speicherung, wenn kein Bucket konfiguriert ist
@@ -581,13 +589,20 @@ def lambda_handler(event, context):
         default_file = f"{key_prefix}_{DEFAULT_SOURCE}.html"
         if default_file in html_files:
             if bucket:
+                # Komprimiere auch index.html mit Gzip
+                html_bytes = html_files[default_file].encode('utf-8')
+                compressed_html = gzip.compress(html_bytes, compresslevel=9)
+                
                 s3.put_object(
                     ContentType='text/html',
+                    ContentEncoding='gzip',
                     CacheControl='public, max-age=2592000',
-                    Body=html_files[default_file],
+                    Body=compressed_html,
                     Bucket=bucket,
                     Key=key)  # Standarddateiname (meistens index.html)
-                print(f"Standarddatei {key} wurde in S3-Bucket {bucket} hochgeladen")
+                
+                compression_ratio = (1 - len(compressed_html) / len(html_bytes)) * 100
+                print(f"Standarddatei {key} wurde in S3-Bucket {bucket} hochgeladen (komprimiert: {compression_ratio:.1f}% kleiner)")
             else:
                 try:
                     with open(key, 'w', encoding='utf-8') as f:
