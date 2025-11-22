@@ -13,6 +13,7 @@ echo "Erstelle Lambda-Deployment-Paket..."
 
 # Kopiere die notwendigen Dateien
 cp lambda_handler.py "$TMP_DIR/periodic.py"
+cp base64_images.py "$TMP_DIR/base64_images.py"
 # Verwende die aktualisierte Basisvorlage (inkl. Favicon und Tabs) als Template für den Handler
 cp base_template.mustache "$TMP_DIR/base_template.mustache"
 # Kopiere das img-Verzeichnis mit Logo
@@ -52,10 +53,26 @@ echo "Räume temporäre Dateien auf..."
 rm -rf "$TMP_DIR"
 
 echo "Lambda-Funktion erfolgreich aktualisiert!"
-echo "Die folgenden Dateien werden nach dem nächsten Aufruf in S3 erstellt:"
+
+# Lambda-Funktion aufrufen, um HTML-Dateien zu generieren
+echo ""
+echo "Rufe Lambda-Funktion auf, um HTML-Dateien zu generieren..."
+aws lambda invoke \
+    --function-name "$LAMBDA_FUNCTION_NAME" \
+    --region "$REGION" \
+    --log-type Tail \
+    --query 'LogResult' \
+    --output text response.json | base64 --decode
+
+echo ""
+echo "Lambda-Funktion erfolgreich ausgeführt!"
+echo "Die folgenden Dateien wurden in S3 erstellt:"
 echo "  - index.html (Hauptdatei, verweist auf die Standard-Datenquelle)"
 echo "  - index_scrape.html (Web Scraping-Version)"
 echo "  - index_directory.html (Directory API-Version)"
+
+# Aufräumen der Response-Datei
+rm -f response.json
 
 # CloudFront Cache invalidieren
 echo ""
