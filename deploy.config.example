@@ -5,7 +5,7 @@
 REGION="eu-central-1"
 
 # CloudFormation Stack Name
-STACK_NAME="aws-periodic-table"
+STACK_NAME="awsperiodictable"
 
 # S3 Bucket für Lambda Package Staging (PRIVAT)
 # Dieser Bucket speichert Lambda ZIP-Dateien und sollte KEINE öffentliche Policy haben

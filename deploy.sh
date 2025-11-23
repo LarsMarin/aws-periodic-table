@@ -89,7 +89,7 @@ fi
 
 # Default values (fallback if not in config)
 REGION="${REGION:-us-east-1}"
-STACK_NAME="${STACK_NAME:-aws-periodic-table}"
+STACK_NAME="${STACK_NAME:-awsperiodictable}"
 OUTPUT_KEY="${OUTPUT_KEY:-index.html}"
 LAMBDA_BUCKET="${LAMBDA_BUCKET:-}"
 OUTPUT_BUCKET="${OUTPUT_BUCKET:-}"

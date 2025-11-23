@@ -200,7 +200,7 @@ echo ""
 if [ "$WEBSITE_BUCKET" != "*.amazonaws.com" ]; then
     echo "  3. REQUIRED - Setup CloudFront with OAI (Origin Access Identity):"
     echo "     The website bucket is private and requires CloudFront to serve content."
-    echo "     ./infrastructure/setup-cloudfront.sh -r $REGION -s aws-periodic-table -b $WEBSITE_BUCKET"
+    echo "     ./infrastructure/setup-cloudfront.sh -r $REGION -s awsperiodictable -b $WEBSITE_BUCKET"
     echo ""
     echo "  4. CloudFront will:"
     echo "     - Create an Origin Access Identity (OAI)"

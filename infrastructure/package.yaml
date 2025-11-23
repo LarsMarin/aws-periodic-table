@@ -39,9 +39,9 @@ Resources:
   ProductScraper:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: periodic.lambda_handler
+      Handler: lambda_handler.lambda_handler
       Runtime: python3.12
-      CodeUri: s3://awsperiodictable.com-lambda/4290a77ad6e616a0699cf1b20887e3ac
+      CodeUri: s3://aws-periodic-table-lambda-staging/3a23e9bd2712d4e008115f91f6967f0d
       Timeout: 60
       Role:
         Fn::GetAtt:
@@ -56,8 +56,8 @@ Resources:
   ProductScraperSchedule:
     Type: AWS::Events::Rule
     Properties:
-      Description: ScheduledRule
-      ScheduleExpression: rate(1 day)
+      Description: Monthly update on 1st day of month at 00:00 UTC
+      ScheduleExpression: cron(0 0 1 * ? *)
       State: ENABLED
       Targets:
       - Arn:
@@ -76,3 +76,20 @@ Resources:
         Fn::GetAtt:
         - ProductScraperSchedule
         - Arn
+Outputs:
+  LambdaFunction:
+    Description: Lambda Function Name
+    Value:
+      Ref: ProductScraper
+    Export:
+      Name:
+        Fn::Sub: ${AWS::StackName}-LambdaFunction
+  LambdaFunctionArn:
+    Description: Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - ProductScraper
+      - Arn
+    Export:
+      Name:
+        Fn::Sub: ${AWS::StackName}-LambdaFunctionArn

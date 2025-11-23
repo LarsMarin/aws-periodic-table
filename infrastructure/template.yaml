@@ -46,9 +46,9 @@ Resources:
   ProductScraper:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: periodic.lambda_handler
+      Handler: lambda_handler.lambda_handler
       Runtime: python3.12
-      CodeUri: ./periodic
+      CodeUri: ../periodic
       Timeout: 60
       Role: !GetAtt [ProductScraperRole, Arn]
       Environment:
@@ -74,3 +74,16 @@ Resources:
       Action: lambda:InvokeFunction
       Principal: events.amazonaws.com
       SourceArn: !GetAtt [ProductScraperSchedule, Arn]
+
+Outputs:
+  LambdaFunction:
+    Description: Lambda Function Name
+    Value: !Ref ProductScraper
+    Export:
+      Name: !Sub "${AWS::StackName}-LambdaFunction"
+  
+  LambdaFunctionArn:
+    Description: Lambda Function ARN
+    Value: !GetAtt ProductScraper.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-LambdaFunctionArn"
