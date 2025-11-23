@@ -3,6 +3,7 @@ import os, sys
 sys.path.append(os.path.join(os.path.dirname(__file__), 'lib'))
 
 import re, json, boto3, pystache, gzip
+from datetime import datetime
 from bs4 import BeautifulSoup
 from requests import get
 
@@ -541,6 +542,7 @@ def lambda_handler(event, context):
             periodic_data['data_sources'] = sources_meta  # Tab-Informationen
             periodic_data['logo_data_uri'] = LOGO_DATA_URI  # Eingebettetes Logo
             periodic_data['favicon_data_uri'] = FAVICON_DATA_URI  # Eingebettetes Favicon
+            periodic_data['last_update'] = datetime.now().strftime('%B %d, %Y')  # Aktuelles Datum
             
             # Debug: Print sources_meta für diese Datei
             print(f"Generiere {filename} mit {len(sources_meta)} Tabs:")
