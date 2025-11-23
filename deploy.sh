@@ -37,7 +37,7 @@ Parameter können als Optionen überschrieben werden.
 OPTIONS:
     -r, --region REGION              AWS region
     -l, --lambda-bucket BUCKET       S3 bucket for Lambda package staging (private)
-    -b, --output-bucket BUCKET       S3 bucket for HTML output (public website)
+    -b, --output-bucket BUCKET       S3 bucket for HTML output (private, CloudFront access)
     -s, --stack-name NAME            CloudFormation stack name
     -k, --output-key KEY             Output file name
     -c, --cloudfront-id ID           CloudFront distribution ID (for cache invalidation)
@@ -63,7 +63,7 @@ CONFIGURATION:
     Editiere deploy.config um Standard-Werte zu setzen:
     - REGION
     - LAMBDA_BUCKET (privat)
-    - OUTPUT_BUCKET (öffentlich)
+    - OUTPUT_BUCKET (privat, CloudFront only)
     - STACK_NAME
     - OUTPUT_KEY
     - CLOUDFRONT_ID
@@ -161,7 +161,7 @@ fi
 print_info "Deployment Configuration:"
 echo "  Region:           $REGION"
 echo "  Lambda Bucket:    $LAMBDA_BUCKET (private)"
-echo "  Output Bucket:    $OUTPUT_BUCKET (public)"
+echo "  Output Bucket:    $OUTPUT_BUCKET (private, CloudFront only)"
 echo "  Stack Name:       $STACK_NAME"
 echo "  Output Key:       $OUTPUT_KEY"
 if [ -n "$CLOUDFRONT_ID" ]; then

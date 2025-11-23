@@ -31,7 +31,7 @@ Setup S3 buckets for AWS Periodic Table
 
 OPTIONS:
     -l, --lambda-bucket NAME    Name for private Lambda staging bucket
-    -w, --website-bucket NAME   Name for public website bucket
+    -w, --website-bucket NAME   Name for private website bucket (CloudFront access only)
     -r, --region REGION         AWS region (default: eu-central-1)
     -h, --help                  Show this help
 
@@ -40,7 +40,7 @@ EXAMPLES:
 
 SECURITY:
     Lambda bucket: Created as PRIVATE (for Lambda ZIP files)
-    Website bucket: Created as PUBLIC (for HTML files, accessible via web)
+    Website bucket: Created as PRIVATE (only CloudFront OAI can access)
 
 EOF
     exit 1
