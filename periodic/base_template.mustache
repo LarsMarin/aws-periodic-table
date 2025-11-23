@@ -57,19 +57,20 @@
     
     .Header {
       color: #f86b00;
-      font-size: 3.5vw;
+      font-size: 1.75vw;
       font-weight: bold;
       text-align: center;
       padding: 20px 0;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
       gap: 20px;
     }
 
     .Header img {
-        height: 4.5vw;
+        height: 8.5vw;
         width: auto;
+        margin-top: -3.5vw;
     }
     
     .Legend {
@@ -261,10 +262,10 @@
     <div class="Wrapper">
       <!-- Header -->
       <div class="Header">
-        <a href="https://www.tecracer.com/" target="_blank" rel="noopener noreferrer">
+        <a href="https://www.tecracer.com/" target="_blank" rel="noopener noreferrer" style="align-self: flex-start;">
           <img src="{{{logo_data_uri}}}" alt="TecRacer Logo" width="120" height="auto">
         </a>
-        <div>
+        <div style="align-self: flex-start;">
           <div>Periodic Table of Amazon Web Services</div>
           {{#last_update}}<div style="font-size: 1.2vw; color: #666; font-weight: normal; margin-top: 5px;">Last Update: {{last_update}}</div>{{/last_update}}
         </div>
