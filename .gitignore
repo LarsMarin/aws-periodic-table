@@ -1,28 +1,61 @@
 # Python dependencies
 periodic/lib/
+*.egg-info/
+dist/
+build/
 
 # Output files
 output/
+*.html
 *.zip
+
+# CloudFormation
+infrastructure/package.yaml
+infrastructure/packaged-*.yaml
 
 # Python cache
 __pycache__/
 *.py[cod]
 *$py.class
+*.so
+.Python
 
 # Virtual environments
 venv/
 env/
 ENV/
+.venv/
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
+*.sublime-*
 
 # OS
 .DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# AWS
+.aws-sam/
+samconfig.toml
+
+# Temporary files
+*.tmp
+*_backup.*
+response.json
+
+# Deployment configuration (may contain sensitive data)
+deploy.config
 
 # Snyk Security Extension - AI Rules (auto-generated)
 .github/instructions/snyk_rules.instructions.md

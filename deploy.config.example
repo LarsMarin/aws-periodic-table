@@ -1,0 +1,23 @@
+# AWS Periodic Table Deployment Configuration
+# Kopiere diese Datei zu "deploy.config" und passe die Werte an
+
+# AWS Region
+REGION="eu-central-1"
+
+# CloudFormation Stack Name
+STACK_NAME="aws-periodic-table"
+
+# S3 Bucket für Lambda Package Staging (PRIVAT)
+# Dieser Bucket speichert Lambda ZIP-Dateien und sollte KEINE öffentliche Policy haben
+LAMBDA_BUCKET="your-lambda-staging-bucket"
+
+# S3 Bucket für HTML Output (PRIVAT - nur CloudFront Zugriff)
+# Dieser Bucket ist NICHT öffentlich zugänglich
+# CloudFront mit OAI (Origin Access Identity) liest aus diesem Bucket
+OUTPUT_BUCKET="your-website-bucket.com"
+
+# Default Output Key
+OUTPUT_KEY="index.html"
+
+# CloudFront Distribution ID (für Cache-Invalidierung)
+CLOUDFRONT_ID="YOUR_DISTRIBUTION_ID"
