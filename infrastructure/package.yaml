@@ -41,7 +41,7 @@ Resources:
     Properties:
       Handler: lambda_handler.lambda_handler
       Runtime: python3.12
-      CodeUri: s3://aws-periodic-table-lambda-staging/59f753afaa2b2addb50472b0c2a7b25c
+      CodeUri: s3://aws-periodic-table-lambda-staging/a48ea56879bba47b395faa8013506ac8
       Timeout: 60
       Role:
         Fn::GetAtt:
