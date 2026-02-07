@@ -35,13 +35,14 @@ Resources:
             - s3:PutObject
             - s3:PutObjectAcl
             Resource:
-              Fn::Sub: arn:aws:s3:::${Bucket}/${Key}
+            - Fn::Sub: arn:aws:s3:::${Bucket}/${Key}
+            - Fn::Sub: arn:aws:s3:::${Bucket}/index_*.html
   ProductScraper:
     Type: AWS::Serverless::Function
     Properties:
       Handler: lambda_handler.lambda_handler
       Runtime: python3.12
-      CodeUri: s3://aws-periodic-table-lambda-staging/bf6064b3185e93a67ba98b3f9ef1443d
+      CodeUri: s3://aws-periodic-table-lambda-staging/f5ff584ec480be752918e6d3fdb24f68
       Timeout: 60
       Role:
         Fn::GetAtt:

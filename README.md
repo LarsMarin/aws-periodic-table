@@ -161,6 +161,7 @@ Configure these on the Lambda function:
 - `PERIODIC_DATA_SOURCE`: Data source selection
   - `scrape`: Web scraping (original behavior, default)
   - `directory`: AWS Directory API (includes all services/features)
+  - `esc`: AWS European Sovereign Cloud (filtered Directory API data)
   - `merged`: Combined sources (future enhancement)
 - `PERIODIC_PRODUCTS_SIZE`: Number of items from Directory API (default: `300`)
 
@@ -186,6 +187,20 @@ python3 test_local.py --source directory --size 300
 # Or use environment variables
 PERIODIC_DATA_SOURCE=directory PERIODIC_PRODUCTS_SIZE=300 python3 test_local.py
 ```
+
+### 3. AWS European Sovereign Cloud (ESC)
+Filters AWS services to show only those available in the AWS European Sovereign Cloud. Uses the Directory API as the base data source and filters based on ESC service availability.
+
+```bash
+# Test locally with ESC
+cd debug
+python3 test_local.py --source esc
+
+# Or use environment variables
+PERIODIC_DATA_SOURCE=esc python3 test_local.py
+```
+
+The ESC service list is maintained in `periodic/esc_services.json` and is automatically updated monthly via the Lambda function.
 
 ### 3. Fetch Utilities
 
@@ -243,11 +258,14 @@ Set up a CloudFront distribution with custom domain:
 
 ## Output Files
 
-The Lambda function generates three versions:
+The Lambda function generates four versions:
 
 1. `index.html` - Main file (uses default PERIODIC_DATA_SOURCE)
-2. `index_scrape.html` - Web scraping version
-3. `index_directory.html` - Directory API version
+2. `index_scrape.html` - AWS Global (Web scraping version)
+3. `index_directory.html` - AWS Global (Directory API version)
+4. `index_esc.html` - AWS European Sovereign Cloud (ESC filtered version)
+
+All versions include tab navigation to switch between different data sources.
 
 ## Service Categorization
 

@@ -11,8 +11,8 @@ from requests import get
 from base64_images import LOGO_DATA_URI, FAVICON_DATA_URI
 
 # Optional: Wählen Sie Datenquelle und Verzeichnis-API-Größe über die Umgebung
-# Unterstützte Quellen: scrape, directory, merged (merged verhält sich derzeit wie directory)
-SUPPORTED_SOURCES = ['scrape', 'directory']
+# Unterstützte Quellen: scrape, directory, esc (merged verhält sich derzeit wie directory)
+SUPPORTED_SOURCES = ['scrape', 'directory', 'esc']
 DEFAULT_SOURCE = os.environ.get('PERIODIC_DATA_SOURCE', 'scrape')
 
 # AWS Products Directory endpoint template
@@ -83,6 +83,83 @@ preferred_names = {
   "Elastic Container Service for Kubernetes": "ECS for Kubernetes",
   "Serverless Application Repository":"Serverless App Repo"
 }
+
+# Load ESC services dynamically from docs.aws.eu
+def load_esc_services():
+    """
+    Load the list of services available in AWS European Sovereign Cloud.
+    Fetches dynamically from docs.aws.eu documentation page.
+    Falls back to esc_services.json if dynamic fetch fails.
+    """
+    try:
+        print("Fetching ESC services from docs.aws.eu...")
+        
+        import urllib.parse
+        
+        esc_url = 'https://docs.aws.eu/'
+        response = get(esc_url, headers=HEADERS, timeout=20)
+        response.raise_for_status()
+        
+        soup = BeautifulSoup(response.content, 'html.parser')
+        
+        xml_input = soup.find('input', {'id': 'landing-page-xml'})
+        if xml_input and xml_input.get('value'):
+            xml_data = urllib.parse.unquote(xml_input['value'])
+            
+            title_pattern = r'<title>\s*([^<]+?)\s*</title>'
+            matches = re.findall(title_pattern, xml_data)
+            
+            # Only filter out obvious non-service entries
+            excluded_entries = {
+                'Welcome to AWS Documentation', 'Featured content',
+                'Getting started with AWS European Sovereign Cloud Regions'
+            }
+            
+            esc_services = set()
+            for match in matches:
+                service_name = match.strip()
+                # Clean up whitespace issues
+                service_name = ' '.join(service_name.split())
+                
+                if (service_name and
+                    len(service_name) < 100 and
+                    service_name not in excluded_entries and
+                    not service_name.startswith('Getting started')):
+                    esc_services.add(service_name)
+            
+            if len(esc_services) >= 50:  # Expect at least 50 real services
+                print(f"Fetched {len(esc_services)} ESC services dynamically")
+                return esc_services
+        
+        print("Dynamic fetch returned insufficient data")
+        
+    except Exception as e:
+        print(f"Dynamic fetch failed: {e}")
+    
+    # Fallback to esc_services.json
+    print("Using fallback ESC service list from esc_services.json")
+    try:
+        esc_json_path = os.path.join(os.path.dirname(__file__), 'esc_services.json')
+        with open(esc_json_path, 'r', encoding='utf-8') as f:
+            esc_data = json.load(f)
+            services = esc_data.get('services', [])
+            if services:
+                print(f"Loaded {len(services)} services from esc_services.json")
+                return set(services)
+    except Exception as e:
+        print(f"Failed to load esc_services.json: {e}")
+    
+    # Final fallback to minimal known list
+    print("Using minimal fallback ESC service list")
+    return {
+        'Amazon EC2', 'AWS Lambda', 'Amazon ECS', 'Amazon EKS',
+        'Amazon S3', 'Amazon EBS', 'Amazon RDS', 'Amazon Aurora',
+        'Amazon DynamoDB', 'Amazon VPC', 'AWS KMS',
+        'AWS Private Certificate Authority', 'Amazon Bedrock'
+    }
+
+# ESC services cache - will be populated when needed
+ESC_SERVICES = None
 
 # Default colors
 colors = ["#834187", "#878541", "#458741", "#874145",
@@ -298,6 +375,7 @@ def get_data_from_directory():
 
         categories_by_name[cname]['services'].append({
             'name': clean_name,
+            'full_name': name,  # Original full name for ESC filtering
             'desc': desc,
             'link': link or '',
             'prefix': prefix,
@@ -406,6 +484,7 @@ def get_data_from_scrape():
                     
                     category["services"].append({
                         "name": clean_name,
+                        "full_name": name,  # Original full name for ESC filtering
                         "desc": desc,
                         "link": link,
                         "prefix": prefix,
@@ -421,6 +500,67 @@ def get_data_from_scrape():
     except Exception as e:
         print(f"Error during scraping: {e}")
         
+    return periodic
+
+# Funktion zum Sammeln von ESC-Daten (filtert AWS Directory-Daten)
+def get_data_from_esc():
+    global ESC_SERVICES
+    
+    periodic = {'categories': [], 'title': "Periodic Table of AWS European Sovereign Cloud",
+              'description': "AWS Services available in the European Sovereign Cloud"}
+    
+    # Hole zuerst alle AWS-Daten aus der Directory API
+    aws_data = get_data_from_directory()
+    
+    # Lade ESC-Services dynamisch (nur einmal pro Lambda-Ausführung)
+    if ESC_SERVICES is None:
+        ESC_SERVICES = load_esc_services()
+    
+    esc_services = ESC_SERVICES
+    
+    if not esc_services:
+        print("Warning: No ESC services loaded, returning empty periodic table")
+        return periodic
+    
+    # Filtere die AWS-Daten basierend auf ESC-Verfügbarkeit
+    for category in aws_data.get('categories', []):
+        filtered_services = []
+        
+        for service in category.get('services', []):
+            # Prüfe ob der Service in ESC verfügbar ist
+            # Versuche verschiedene Name-Varianten
+            full_name = f"{service['prefix']} {service['name']}"
+            
+            # Normalisiere Namen für Vergleich
+            service_variants = [
+                full_name,
+                service['name'],
+                f"Amazon {service['name']}",
+                f"AWS {service['name']}"
+            ]
+            
+            # Prüfe ob irgendeine Variante in ESC verfügbar ist
+            is_available = any(variant in esc_services for variant in service_variants)
+            
+            if is_available:
+                # Erstelle eine Kopie des Service-Objekts
+                esc_service = service.copy()
+                
+                # Alle ESC-Links führen zur ESC-Hauptseite
+                # ESC hat eine eigene Domain: https://www.aws.eu/
+                esc_service['link'] = 'https://www.aws.eu/'
+                
+                filtered_services.append(esc_service)
+        
+        # Nur Kategorien mit Services hinzufügen
+        if filtered_services:
+            category['services'] = filtered_services
+            periodic['categories'].append(category)
+    
+    # Füge ESC-spezifische Metadaten hinzu
+    periodic['esc_region'] = 'eusc-de-east-1 (Brandenburg, Germany)'
+    periodic['esc_note'] = 'European Sovereign Cloud - Operated exclusively by EU residents in the EU'
+    
     return periodic
 
 # Funktion zum Berechnen der Elementpositionen in der Tabelle
@@ -502,6 +642,12 @@ def lambda_handler(event, context):
     scrape_data = get_data_from_scrape()
     data_by_source['scrape'] = scrape_data
     
+    # Daten aus ESC (filtert Directory-Daten)
+    print("Generating ESC data...")
+    esc_data = get_data_from_esc()
+    data_by_source['esc'] = esc_data
+    print(f"ESC data generated with {len(esc_data.get('categories', []))} categories")
+    
     # Erstelle die Tab-Navigation für ALLE Quellen VOR der Schleife
     all_sources_meta = []
     for source in SUPPORTED_SOURCES:
@@ -509,9 +655,9 @@ def lambda_handler(event, context):
         base_filename = os.path.basename(filename)
         
         source_label = {
-            'scrape': "Web Scraping",
-            'directory': "Directory API",
-            'merged': "Combined Sources"
+            'scrape': "AWS Global (Scraping)",
+            'directory': "AWS Global (Directory)",
+            'esc': "AWS European Sovereign Cloud"
         }.get(source, source.capitalize())
         
         all_sources_meta.append({
@@ -543,6 +689,16 @@ def lambda_handler(event, context):
             periodic_data['logo_data_uri'] = LOGO_DATA_URI  # Eingebettetes Logo
             periodic_data['favicon_data_uri'] = FAVICON_DATA_URI  # Eingebettetes Favicon
             periodic_data['last_update'] = datetime.now().strftime('%B %d, %Y')  # Aktuelles Datum
+            
+            # ESC Filter nur für Global-Tabs (scrape und directory)
+            if source in ['scrape', 'directory']:
+                periodic_data['show_esc_filter'] = True
+                # ESC Services als JSON für JavaScript
+                esc_services_list = list(load_esc_services())
+                periodic_data['esc_services_json'] = json.dumps(esc_services_list)
+            else:
+                periodic_data['show_esc_filter'] = False
+                periodic_data['esc_services_json'] = '[]'
             
             # Debug: Print sources_meta für diese Datei
             print(f"Generiere {filename} mit {len(sources_meta)} Tabs:")

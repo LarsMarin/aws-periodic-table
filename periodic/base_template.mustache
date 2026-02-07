@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   
   <!-- Security: Content Security Policy -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' fonts.googleapis.com; font-src fonts.gstatic.com; img-src 'self' https: data:; script-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' fonts.googleapis.com; font-src fonts.gstatic.com; img-src 'self' https: data:; script-src 'unsafe-inline'; object-src 'none'; base-uri 'self'; form-action 'none';">
   
   <!-- SEO Meta Tags -->
   <meta name="robots" content="index, follow">
@@ -254,8 +254,132 @@
       margin: 0 15px;
       color: #999;
     }
+    
+    /* ESC Filter Toggle Switch */
+    .esc-filter-container {
+      display: inline-flex;
+      align-items: center;
+      margin-left: 20px;
+      gap: 12px;
+    }
+    
+    .esc-filter-label {
+      font-size: 0.95rem;
+      font-weight: bold;
+      color: #333;
+      user-select: none;
+    }
+    
+    /* Toggle Switch */
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 30px;
+    }
+    
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 30px;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 22px;
+      width: 22px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .toggle-switch input:checked + .toggle-slider {
+      background-color: #00cc66;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.15), 0 0 8px rgba(0,204,102,0.3);
+    }
+    
+    .toggle-switch input:checked + .toggle-slider:before {
+      transform: translateX(30px);
+    }
+    
+    .toggle-slider:hover {
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.15), 0 0 8px rgba(0,0,0,0.1);
+    }
+    
+    .toggle-switch input:checked + .toggle-slider:hover {
+      background-color: #00b359;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.15), 0 0 12px rgba(0,204,102,0.4);
+    }
+    
+    /* Hide filter on ESC tab */
+    .tabs .tab.active[href*="_esc.html"] ~ .esc-filter-container {
+      display: none;
+    }
   </style>
   <link href='https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz&display=swap' rel='stylesheet' type='text/css'>
+  
+  <!-- ESC Services for filtering -->
+  <script>
+    // ESC Services list for filtering
+    const ESC_SERVICES = {{{esc_services_json}}};
+    
+    function toggleESCFilter() {
+      const toggle = document.getElementById('esc-filter-toggle');
+      const services = document.querySelectorAll('.Service');
+      const isActive = toggle.checked;
+      
+      if (isActive) {
+        services.forEach(service => {
+          const serviceName = service.getAttribute('data-service-name');
+          if (serviceName && !isESCService(serviceName)) {
+            service.style.opacity = '0.15';
+            service.style.pointerEvents = 'none';
+          }
+        });
+      } else {
+        services.forEach(service => {
+          service.style.opacity = '1';
+          service.style.pointerEvents = 'auto';
+        });
+      }
+    }
+    
+    function isESCService(serviceName) {
+      if (!ESC_SERVICES || ESC_SERVICES.length === 0) return false;
+      
+      // Normalize service name for comparison
+      const normalized = serviceName.trim();
+      
+      // Check exact match
+      if (ESC_SERVICES.includes(normalized)) return true;
+      
+      // Check with different prefixes
+      const withoutPrefix = normalized.replace(/^(AWS|Amazon)\s+/, '');
+      const withAWS = 'AWS ' + withoutPrefix;
+      const withAmazon = 'Amazon ' + withoutPrefix;
+      
+      return ESC_SERVICES.includes(withoutPrefix) ||
+             ESC_SERVICES.includes(withAWS) ||
+             ESC_SERVICES.includes(withAmazon);
+    }
+  </script>
 </head>
 <body>
   <div class="Container">
@@ -266,8 +390,10 @@
           <img src="{{{logo_data_uri}}}" alt="TecRacer Logo" width="120" height="auto">
         </a>
         <div style="align-self: flex-start;">
-          <div>Periodic Table of Amazon Web Services</div>
+          <div>{{title}}</div>
           {{#last_update}}<div style="font-size: 1.2vw; color: #666; font-weight: normal; margin-top: 5px;">Last Update: {{last_update}}</div>{{/last_update}}
+          {{#esc_region}}<div style="font-size: 1.0vw; color: #0066cc; font-weight: bold; margin-top: 5px;">Region: {{esc_region}}</div>{{/esc_region}}
+          {{#esc_note}}<div style="font-size: 0.9vw; color: #666; font-style: italic; margin-top: 3px;">{{esc_note}}</div>{{/esc_note}}
         </div>
       </div>
       
@@ -276,6 +402,15 @@
       {{#data_sources}}
         <a href="{{filename}}" class="tab {{#active}}active{{/active}}">{{label}}</a>
       {{/data_sources}}
+      {{#show_esc_filter}}
+        <div class="esc-filter-container">
+          <span class="esc-filter-label">Show ESC Only</span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="esc-filter-toggle" onchange="toggleESCFilter()">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      {{/show_esc_filter}}
       </div>
       
       <div class="Grid">
@@ -288,7 +423,7 @@
         </div>
         {{#categories}}
         {{#services}}
-        <div class="Service {{category}}" style="grid-column: {{column}}; grid-row: {{row}};" >
+        <div class="Service {{category}}" style="grid-column: {{column}}; grid-row: {{row}};" data-service-name="{{full_name}}">
           <a href="{{{link}}}" target="_blank">
             <div class="Prefix">{{prefix}}</div>
             <div class="Symbol {{category}}">{{symbol}}</div>
