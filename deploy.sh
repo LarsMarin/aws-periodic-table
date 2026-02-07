@@ -274,6 +274,7 @@ if [ "$INVOKE_LAMBDA" = true ] && [ -n "$FUNCTION_NAME" ]; then
         echo "  - index.html (main file, uses default data source)"
         echo "  - index_scrape.html (web scraping version)"
         echo "  - index_directory.html (directory API version)"
+        echo "  - index_esc.html (ESC version)"
         
         # List files in S3
         aws s3 ls "s3://$OUTPUT_BUCKET/" --region "$REGION" 2>/dev/null | grep "index"
@@ -291,7 +292,7 @@ if [ -n "$CLOUDFRONT_ID" ]; then
     
     INVALIDATION_OUTPUT=$(aws cloudfront create-invalidation \
         --distribution-id "$CLOUDFRONT_ID" \
-        --paths "/index.html" "/index_scrape.html" "/index_directory.html" \
+        --paths "/index.html" "/index_scrape.html" "/index_directory.html" "/index_esc.html" \
         --query 'Invalidation.{Id:Id,Status:Status,CreateTime:CreateTime}' \
         --output table 2>&1)
     
