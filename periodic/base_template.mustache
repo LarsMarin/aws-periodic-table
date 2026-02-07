@@ -332,6 +332,189 @@
     .tabs .tab.active[href*="_esc.html"] ~ .esc-filter-container {
       display: none;
     }
+    
+    /* Regions Display (ESC and Global) - Collapsible */
+    .esc-regions-container,
+    .global-regions-container {
+      margin: 20px auto;
+      max-width: 90%;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .global-regions-container {
+      background: linear-gradient(135deg, #fff5e6 0%, #ffe6cc 100%);
+    }
+    
+    .regions-header {
+      padding: 15px 20px;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background-color 0.3s ease;
+    }
+    
+    .regions-header:hover {
+      background-color: rgba(255,255,255,0.3);
+    }
+    
+    .esc-regions-title,
+    .global-regions-title {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: #0066cc;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .global-regions-title {
+      color: #f86b00;
+    }
+    
+    .esc-regions-title::before,
+    .global-regions-title::before {
+      content: '🌍';
+      font-size: 1.6rem;
+    }
+    
+    .regions-toggle-icon {
+      font-size: 1.5rem;
+      transition: transform 0.3s ease;
+      color: #666;
+    }
+    
+    .regions-toggle-icon.expanded {
+      transform: rotate(180deg);
+    }
+    
+    .regions-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      padding: 0 20px;
+    }
+    
+    .regions-content.expanded {
+      max-height: 2000px;
+      padding: 0 20px 20px 20px;
+    }
+    
+    .esc-regions-section {
+      margin-bottom: 15px;
+    }
+    
+    .esc-regions-section:last-child {
+      margin-bottom: 0;
+    }
+    
+    .esc-regions-subtitle {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 10px;
+      padding-left: 5px;
+    }
+    
+    .esc-regions-subtitle.available {
+      color: #00a352;
+    }
+    
+    .esc-regions-subtitle.available::before {
+      content: '✓ ';
+      color: #00cc66;
+      font-weight: bold;
+    }
+    
+    .esc-regions-subtitle.planned {
+      color: #f86b00;
+    }
+    
+    .esc-regions-subtitle.planned::before {
+      content: '⏱ ';
+      color: #f86b00;
+    }
+    
+    .esc-regions-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .esc-region-badge {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 10px 16px;
+      background-color: white;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+      gap: 2px;
+    }
+    
+    .region-name {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .region-code {
+      font-size: 0.75rem;
+      font-weight: 500;
+      opacity: 0.7;
+      font-family: 'Courier New', monospace;
+    }
+    
+    .esc-region-badge.available {
+      border-color: #00cc66;
+      color: #00a352;
+    }
+    
+    .esc-region-badge.available .region-name::before {
+      content: '●';
+      color: #00cc66;
+      margin-right: 8px;
+      font-size: 1.2rem;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    
+    .esc-region-badge.planned {
+      border-color: #fcc438;
+      color: #d89000;
+    }
+    
+    .esc-region-badge.planned .region-name::before {
+      content: '○';
+      color: #fcc438;
+      margin-right: 8px;
+      font-size: 1.2rem;
+    }
+    
+    .esc-region-badge:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.5;
+      }
+    }
   </style>
   <link href='https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz&display=swap' rel='stylesheet' type='text/css'>
   
@@ -379,6 +562,21 @@
              ESC_SERVICES.includes(withAWS) ||
              ESC_SERVICES.includes(withAmazon);
     }
+    
+    // Toggle regions display
+    function toggleRegions(containerId) {
+      const container = document.getElementById(containerId);
+      const content = container.querySelector('.regions-content');
+      const icon = container.querySelector('.regions-toggle-icon');
+      
+      if (content.classList.contains('expanded')) {
+        content.classList.remove('expanded');
+        icon.classList.remove('expanded');
+      } else {
+        content.classList.add('expanded');
+        icon.classList.add('expanded');
+      }
+    }
   </script>
 </head>
 <body>
@@ -412,6 +610,70 @@
         </div>
       {{/show_esc_filter}}
       </div>
+      
+      <!-- ESC Regions Display (only on ESC tab) -->
+      {{#esc_regions}}
+      <div class="esc-regions-container" id="esc-regions">
+        <div class="regions-header" onclick="toggleRegions('esc-regions')">
+          <div class="esc-regions-title">AWS European Sovereign Cloud Regions</div>
+          <div class="regions-toggle-icon">▼</div>
+        </div>
+        
+        <div class="regions-content">
+          {{#available}}
+          <div class="esc-regions-section">
+            <div class="esc-regions-subtitle available">Available Now</div>
+            <div class="esc-regions-list">
+              {{#regions}}
+              <div class="esc-region-badge available">
+                <div class="region-name">{{name}}</div>
+                <div class="region-code">{{code}}</div>
+              </div>
+              {{/regions}}
+            </div>
+          </div>
+          {{/available}}
+          
+          {{#planned}}
+          <div class="esc-regions-section">
+            <div class="esc-regions-subtitle planned">Planned Regions</div>
+            <div class="esc-regions-list">
+              {{#regions}}
+              <div class="esc-region-badge planned">
+                <div class="region-name">{{name}}</div>
+                <div class="region-code">{{code}}</div>
+              </div>
+              {{/regions}}
+            </div>
+          </div>
+          {{/planned}}
+        </div>
+      </div>
+      {{/esc_regions}}
+      
+      <!-- Global Regions Display (only on Global tabs) -->
+      {{#global_regions}}
+      <div class="global-regions-container" id="global-regions">
+        <div class="regions-header" onclick="toggleRegions('global-regions')">
+          <div class="global-regions-title">AWS Global Regions</div>
+          <div class="regions-toggle-icon">▼</div>
+        </div>
+        
+        <div class="regions-content">
+          <div class="esc-regions-section">
+            <div class="esc-regions-subtitle available">{{region_count}} Regions Worldwide</div>
+            <div class="esc-regions-list">
+              {{#regions}}
+              <div class="esc-region-badge available">
+                <div class="region-name">{{name}}</div>
+                <div class="region-code">{{code}}</div>
+              </div>
+              {{/regions}}
+            </div>
+          </div>
+        </div>
+      </div>
+      {{/global_regions}}
       
       <div class="Grid">
         <div class="Legend">

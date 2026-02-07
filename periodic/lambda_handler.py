@@ -561,6 +561,50 @@ def get_data_from_esc():
     periodic['esc_region'] = 'eusc-de-east-1 (Brandenburg, Germany)'
     periodic['esc_note'] = 'European Sovereign Cloud - Operated exclusively by EU residents in the EU'
     
+    # Lade Regionen-Informationen aus esc_services.json
+    try:
+        esc_json_path = os.path.join(os.path.dirname(__file__), 'esc_services.json')
+        with open(esc_json_path, 'r', encoding='utf-8') as f:
+            esc_data = json.load(f)
+            regions_data = esc_data.get('regions', {})
+            
+            # Strukturiere die Regionen-Daten für das Template mit technischen Namen
+            available_regions = []
+            for region in regions_data.get('available', []):
+                available_regions.append({
+                    'name': 'Brandenburg, Germany',
+                    'code': region
+                })
+            
+            planned_regions = []
+            planned_mapping = {
+                'Belgium (Sovereign Local Zone)': 'eusc-be-*',
+                'Netherlands (Sovereign Local Zone)': 'eusc-nl-*',
+                'Portugal (Sovereign Local Zone)': 'eusc-pt-*'
+            }
+            for region in regions_data.get('planned', []):
+                code = planned_mapping.get(region, 'TBD')
+                planned_regions.append({
+                    'name': region.replace(' (Sovereign Local Zone)', ''),
+                    'code': code
+                })
+            
+            periodic['esc_regions'] = {
+                'available': {
+                    'regions': available_regions
+                },
+                'planned': {
+                    'regions': planned_regions
+                }
+            }
+    except Exception as e:
+        print(f"Failed to load regions from esc_services.json: {e}")
+        # Fallback zu leeren Listen
+        periodic['esc_regions'] = {
+            'available': {'regions': []},
+            'planned': {'regions': []}
+        }
+    
     return periodic
 
 # Funktion zum Berechnen der Elementpositionen in der Tabelle
@@ -690,12 +734,51 @@ def lambda_handler(event, context):
             periodic_data['favicon_data_uri'] = FAVICON_DATA_URI  # Eingebettetes Favicon
             periodic_data['last_update'] = datetime.now().strftime('%B %d, %Y')  # Aktuelles Datum
             
-            # ESC Filter nur für Global-Tabs (scrape und directory)
+            # ESC Filter und Global Regions nur für Global-Tabs (scrape und directory)
             if source in ['scrape', 'directory']:
                 periodic_data['show_esc_filter'] = True
                 # ESC Services als JSON für JavaScript
                 esc_services_list = list(load_esc_services())
                 periodic_data['esc_services_json'] = json.dumps(esc_services_list)
+                
+                # Global Regions für Global-Tabs mit technischen Namen
+                global_regions = [
+                    {'name': 'US East (N. Virginia)', 'code': 'us-east-1'},
+                    {'name': 'US East (Ohio)', 'code': 'us-east-2'},
+                    {'name': 'US West (N. California)', 'code': 'us-west-1'},
+                    {'name': 'US West (Oregon)', 'code': 'us-west-2'},
+                    {'name': 'Africa (Cape Town)', 'code': 'af-south-1'},
+                    {'name': 'Asia Pacific (Hong Kong)', 'code': 'ap-east-1'},
+                    {'name': 'Asia Pacific (Hyderabad)', 'code': 'ap-south-2'},
+                    {'name': 'Asia Pacific (Jakarta)', 'code': 'ap-southeast-3'},
+                    {'name': 'Asia Pacific (Melbourne)', 'code': 'ap-southeast-4'},
+                    {'name': 'Asia Pacific (Mumbai)', 'code': 'ap-south-1'},
+                    {'name': 'Asia Pacific (Osaka)', 'code': 'ap-northeast-3'},
+                    {'name': 'Asia Pacific (Seoul)', 'code': 'ap-northeast-2'},
+                    {'name': 'Asia Pacific (Singapore)', 'code': 'ap-southeast-1'},
+                    {'name': 'Asia Pacific (Sydney)', 'code': 'ap-southeast-2'},
+                    {'name': 'Asia Pacific (Tokyo)', 'code': 'ap-northeast-1'},
+                    {'name': 'Canada (Central)', 'code': 'ca-central-1'},
+                    {'name': 'Canada West (Calgary)', 'code': 'ca-west-1'},
+                    {'name': 'Europe (Frankfurt)', 'code': 'eu-central-1'},
+                    {'name': 'Europe (Ireland)', 'code': 'eu-west-1'},
+                    {'name': 'Europe (London)', 'code': 'eu-west-2'},
+                    {'name': 'Europe (Milan)', 'code': 'eu-south-1'},
+                    {'name': 'Europe (Paris)', 'code': 'eu-west-3'},
+                    {'name': 'Europe (Spain)', 'code': 'eu-south-2'},
+                    {'name': 'Europe (Stockholm)', 'code': 'eu-north-1'},
+                    {'name': 'Europe (Zurich)', 'code': 'eu-central-2'},
+                    {'name': 'Israel (Tel Aviv)', 'code': 'il-central-1'},
+                    {'name': 'Middle East (Bahrain)', 'code': 'me-south-1'},
+                    {'name': 'Middle East (UAE)', 'code': 'me-central-1'},
+                    {'name': 'South America (São Paulo)', 'code': 'sa-east-1'},
+                    {'name': 'AWS GovCloud (US-East)', 'code': 'us-gov-east-1'},
+                    {'name': 'AWS GovCloud (US-West)', 'code': 'us-gov-west-1'}
+                ]
+                periodic_data['global_regions'] = {
+                    'region_count': len(global_regions),
+                    'regions': global_regions
+                }
             else:
                 periodic_data['show_esc_filter'] = False
                 periodic_data['esc_services_json'] = '[]'
