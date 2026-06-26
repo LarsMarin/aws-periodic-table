@@ -15,14 +15,13 @@ from base64_images import LOGO_DATA_URI, FAVICON_DATA_URI
 SUPPORTED_SOURCES = ['scrape', 'directory', 'esc']
 DEFAULT_SOURCE = os.environ.get('PERIODIC_DATA_SOURCE', 'scrape')
 
-# AWS Products Directory endpoint template
-AWS_PRODUCTS_API = (
-  "https://aws.amazon.com/api/dirs/items/search?"
-  "item.directoryId=products-cards-interactive-aws-products-ams"
-  "&item.locale=en_US"
-  "&tags.id=GLOBAL%23local-tags-aws-products-type%23service%7CGLOBAL%23local-tags-aws-products-type%23feature"
-  "&sort_by=item.dateCreated&sort_order=asc"
-  f"&size={int(os.environ.get('PERIODIC_PRODUCTS_SIZE', '300'))}"
+# AWS Products Directory endpoint base (pagination handled by fetch_directory_items)
+AWS_PRODUCTS_API_BASE = (
+    "https://aws.amazon.com/api/dirs/items/search?"
+    "item.directoryId=products-cards-interactive-aws-products-ams"
+    "&item.locale=en_US"
+    "&tags.id=GLOBAL%23local-tags-aws-products-type%23service%7CGLOBAL%23local-tags-aws-products-type%23feature"
+    "&sort_by=item.dateCreated&sort_order=asc"
 )
 
 # Common HTTP headers to mimic a browser (helps aws.com endpoints return full data)
@@ -203,6 +202,28 @@ def check_esc_freshness(updated_str):
     return None
 
 
+def fetch_directory_items():
+    """Fetch all items from AWS Directory API using pagination (100 per page)."""
+    page_size = 100
+    from_idx = 0
+    all_items = []
+    while True:
+        url = f"{AWS_PRODUCTS_API_BASE}&size={page_size}&from={from_idx}"
+        try:
+            resp = get(url, headers=HEADERS, timeout=20)
+            resp.raise_for_status()
+            items = resp.json().get('items', [])
+        except Exception as e:
+            print(f"Failed to fetch directory API at from={from_idx}: {e}")
+            break
+        all_items.extend(items)
+        if len(items) < page_size:
+            break
+        from_idx += page_size
+    print(f"Fetched {len(all_items)} items from Directory API")
+    return all_items
+
+
 # Create a symbol, roughly:
 # 1. Use a pre-defined symbol
 # 2. Create a 2 letter symbol using first letters of words in name
@@ -273,14 +294,7 @@ def get_data_from_directory():
     names = {}
     
     # Use AWS Products Directory endpoint to get services/features
-    try:
-        dj = get(AWS_PRODUCTS_API, headers=HEADERS, timeout=20)
-        dj.raise_for_status()
-        data = dj.json()
-    except Exception as e:
-        print("Failed to fetch directory API: %s" % e)
-        data = {"items": []}
-    items = data.get('items', [])
+    items = fetch_directory_items()
 
     # Group items into categories using aws-technology-categories (preferred),
     # falling back to aws-tech-category / badge, else 'Other'.
@@ -457,19 +471,17 @@ def get_data_from_scrape():
         
         if not nav_data:
             print("Could not find product data in page")
-            return periodic
-        
+        else:
         # Parse the navigation data
-        ccount = 0
-        products_menu = None
-        for item in nav_data['items']:
-            if item['name'] == 'Products':
-                products_menu = item
-                break
-        
-        if not products_menu or 'subNav' not in products_menu:
-            print("Could not find Products menu")
-            return periodic
+            ccount = 0
+            products_menu = None
+            for item in nav_data['items']:
+                if item['name'] == 'Products':
+                    products_menu = item
+                    break
+
+            if not products_menu or 'subNav' not in products_menu:
+                print("Could not find Products menu")
         
         # Process each category
         for cat_item in products_menu['subNav']:
@@ -525,7 +537,13 @@ def get_data_from_scrape():
     
     except Exception as e:
         print(f"Error during scraping: {e}")
-        
+
+    total_services = sum(len(cat['services']) for cat in periodic['categories'])
+    if total_services < 100:
+        raise RuntimeError(
+            f"Scraping returned only {total_services} services — "
+            "AWS page structure may have changed. Check https://aws.amazon.com/products/"
+        )
     return periodic
 
 # Funktion zum Sammeln von ESC-Daten (filtert AWS Directory-Daten)
