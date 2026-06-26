@@ -144,6 +144,9 @@ def load_esc_services():
             esc_data = json.load(f)
             services = esc_data.get('services', [])
             if services:
+                warning = check_esc_freshness(esc_data.get('updated', ''))
+                if warning:
+                    print(warning)
                 print(f"Loaded {len(services)} services from esc_services.json")
                 return set(services)
     except Exception as e:
@@ -176,6 +179,29 @@ def parse_name(name):
     name = search.group(2)
     name = name.split("(",2)[0].strip()
     return prefix, name
+
+def strip_prefix(name):
+    """Strip 'AWS ' or 'Amazon ' prefix for normalized ESC matching."""
+    if not name:
+        return name
+    return re.sub(r'^\s*(AWS|Amazon)\s+', '', name).strip()
+
+
+def check_esc_freshness(updated_str):
+    """Return warning string if esc_services.json fallback is >30 days old, else None."""
+    if not updated_str:
+        return None
+    try:
+        from datetime import date
+        updated_date = date.fromisoformat(updated_str)
+        days_old = (date.today() - updated_date).days
+        if days_old > 30:
+            return (f"WARNING: esc_services.json fallback is {days_old} days old "
+                    f"(updated: {updated_str}). Refresh the file.")
+    except ValueError:
+        pass
+    return None
+
 
 # Create a symbol, roughly:
 # 1. Use a pre-defined symbol
@@ -522,25 +548,19 @@ def get_data_from_esc():
         print("Warning: No ESC services loaded, returning empty periodic table")
         return periodic
     
+    # Build normalized ESC set once for efficient matching
+    normalized_esc = {strip_prefix(s) for s in esc_services}
+
     # Filtere die AWS-Daten basierend auf ESC-Verfügbarkeit
     for category in aws_data.get('categories', []):
         filtered_services = []
-        
+
         for service in category.get('services', []):
-            # Prüfe ob der Service in ESC verfügbar ist
-            # Versuche verschiedene Name-Varianten
-            full_name = f"{service['prefix']} {service['name']}"
-            
-            # Normalisiere Namen für Vergleich
-            service_variants = [
-                full_name,
-                service['name'],
-                f"Amazon {service['name']}",
-                f"AWS {service['name']}"
-            ]
-            
-            # Prüfe ob irgendeine Variante in ESC verfügbar ist
-            is_available = any(variant in esc_services for variant in service_variants)
+            # Normalize both sides: strip AWS/Amazon prefix before comparing
+            is_available = (
+                strip_prefix(service.get('full_name', '')) in normalized_esc
+                or strip_prefix(service['name']) in normalized_esc
+            )
             
             if is_available:
                 # Erstelle eine Kopie des Service-Objekts
