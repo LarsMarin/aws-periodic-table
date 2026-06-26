@@ -472,7 +472,7 @@ def get_data_from_scrape():
         if not nav_data:
             print("Could not find product data in page")
         else:
-        # Parse the navigation data
+            # Parse the navigation data
             ccount = 0
             products_menu = None
             for item in nav_data['items']:
@@ -482,58 +482,58 @@ def get_data_from_scrape():
 
             if not products_menu or 'subNav' not in products_menu:
                 print("Could not find Products menu")
-        
-        # Process each category
-        for cat_item in products_menu['subNav']:
-            if cat_item['name'] == 'Featured Products' or 'columns' not in cat_item:
-                continue
-            
-            cname = cat_item['name']
-            cclass = re.sub(r"[&, ]",'',cname)
-            category = {"name": cname, "services":[], "color": colors[ccount % len(colors)], "class":cclass}
-            ccount += 1
-            
-            # Process services in this category
-            for column in cat_item['columns']:
-                items_to_process = []
-                
-                if 'items' in column:
-                    items_to_process.extend(column['items'])
-                
-                if 'sections' in column:
-                    for section in column['sections']:
-                        if 'items' in section:
-                            items_to_process.extend(section['items'])
-                
-                for item in items_to_process:
-                    name = item['title']
-                    if name in names:
-                        continue
-                    names[name] = 1
-                    
-                    desc = item.get('body', '')
-                    link = item.get('hyperLink', '')
-                    
-                    prefix, clean_name = parse_name(name)
-                    symbol = create_symbol(symbols, clean_name)
-                    
-                    if clean_name in preferred_names:
-                        clean_name = preferred_names[clean_name]
-                    
-                    category["services"].append({
-                        "name": clean_name,
-                        "full_name": name,  # Original full name for ESC filtering
-                        "desc": desc,
-                        "link": link,
-                        "prefix": prefix,
-                        "symbol": symbol,
-                        "category": cclass,
-                        "long": len(clean_name) > 11,
-                        "reallong": len(clean_name) > 20
-                    })
-            
-            if category["services"]:
-                periodic['categories'].append(category)
+
+            # Process each category
+            for cat_item in products_menu['subNav']:
+                if cat_item['name'] == 'Featured Products' or 'columns' not in cat_item:
+                    continue
+
+                cname = cat_item['name']
+                cclass = re.sub(r"[&, ]",'',cname)
+                category = {"name": cname, "services":[], "color": colors[ccount % len(colors)], "class":cclass}
+                ccount += 1
+
+                # Process services in this category
+                for column in cat_item['columns']:
+                    items_to_process = []
+
+                    if 'items' in column:
+                        items_to_process.extend(column['items'])
+
+                    if 'sections' in column:
+                        for section in column['sections']:
+                            if 'items' in section:
+                                items_to_process.extend(section['items'])
+
+                    for item in items_to_process:
+                        name = item['title']
+                        if name in names:
+                            continue
+                        names[name] = 1
+
+                        desc = item.get('body', '')
+                        link = item.get('hyperLink', '')
+
+                        prefix, clean_name = parse_name(name)
+                        symbol = create_symbol(symbols, clean_name)
+
+                        if clean_name in preferred_names:
+                            clean_name = preferred_names[clean_name]
+
+                        category["services"].append({
+                            "name": clean_name,
+                            "full_name": name,  # Original full name for ESC filtering
+                            "desc": desc,
+                            "link": link,
+                            "prefix": prefix,
+                            "symbol": symbol,
+                            "category": cclass,
+                            "long": len(clean_name) > 11,
+                            "reallong": len(clean_name) > 20
+                        })
+
+                if category["services"]:
+                    periodic['categories'].append(category)
     
     except Exception as e:
         print(f"Error during scraping: {e}")
