@@ -166,7 +166,6 @@ Lambda generates HTML with embedded:
 
 The main template is `periodic/base_template.mustache`, which includes:
 
-- `periodic/template.mustache` - Periodic table grid layout
 - `periodic/opengraph.mustache` - Social media cards
 - `periodic/twitter.mustache` - Twitter card styles
 - `periodic/google.mustache` - Google search optimization
