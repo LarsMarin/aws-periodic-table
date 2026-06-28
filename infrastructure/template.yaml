@@ -41,9 +41,12 @@ Resources:
                 Action:
                    - s3:PutObject
                    - s3:PutObjectAcl
-                Resource: 
+                Resource:
                   - !Sub 'arn:aws:s3:::${Bucket}/${Key}'
                   - !Sub 'arn:aws:s3:::${Bucket}/index_*.html'
+                  - !Sub 'arn:aws:s3:::${Bucket}/manifest.json'
+                  - !Sub 'arn:aws:s3:::${Bucket}/sw.js'
+                  - !Sub 'arn:aws:s3:::${Bucket}/icon-*.png'
 
   ProductScraper:
     Type: AWS::Serverless::Function

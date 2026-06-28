@@ -8,7 +8,15 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' fonts.googleapis.com; font-src fonts.gstatic.com; img-src 'self' https: data:; script-src 'unsafe-inline'; object-src 'none'; base-uri 'self'; form-action 'none';">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-  
+
+  <!-- PWA Support -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#f86b00">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="AWS Table">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+
   <!-- SEO Meta Tags -->
   <meta name="robots" content="index, follow">
   <meta name="language" content="English">
@@ -623,6 +631,11 @@
         content.classList.add('expanded');
         icon.classList.add('expanded');
       }
+    }
+  </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js');
     }
   </script>
 </head>

@@ -224,6 +224,75 @@ def fetch_directory_items():
     return all_items
 
 
+def generate_manifest():
+    return json.dumps({
+        "name": "Periodic Table of Amazon Web Services",
+        "short_name": "AWS Table",
+        "description": "All AWS services in one periodic table",
+        "start_url": "/index.html",
+        "display": "standalone",
+        "background_color": "#ffffff",
+        "theme_color": "#f86b00",
+        "icons": [
+            {"src": "/icon-192.png", "sizes": "192x192", "type": "image/png"},
+            {"src": "/icon-512.png", "sizes": "512x512", "type": "image/png"}
+        ]
+    }, indent=2)
+
+
+def generate_service_worker(cache_version):
+    return (
+        f"const CACHE = 'aws-periodic-{cache_version}';\n"
+        "const FILES = ['/', '/index.html', '/index_directory.html',\n"
+        "               '/index_scrape.html', '/index_esc.html', '/manifest.json'];\n"
+        "\n"
+        "self.addEventListener('install', e => e.waitUntil(\n"
+        "  caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting())\n"
+        "));\n"
+        "\n"
+        "self.addEventListener('activate', e => e.waitUntil(\n"
+        "  caches.keys().then(keys => Promise.all(\n"
+        "    keys.filter(k => k !== CACHE).map(k => caches.delete(k))\n"
+        "  )).then(() => self.clients.claim())\n"
+        "));\n"
+        "\n"
+        "self.addEventListener('fetch', e => e.respondWith(\n"
+        "  caches.match(e.request).then(r => r || fetch(e.request))\n"
+        "));\n"
+    )
+
+
+def upload_pwa_assets(bucket_name, cache_version):
+    """Upload manifest.json, sw.js and icon PNGs to S3 root."""
+    text_assets = [
+        ('manifest.json',  generate_manifest(),                   'application/json',        'public, max-age=86400'),
+        ('sw.js',          generate_service_worker(cache_version), 'application/javascript',  'public, max-age=0, must-revalidate'),
+    ]
+    for key, content, content_type, cache_control in text_assets:
+        s3.put_object(
+            Bucket=bucket_name, Key=key,
+            Body=content.encode('utf-8'),
+            ContentType=content_type,
+            CacheControl=cache_control,
+        )
+        print(f"Uploaded {key}")
+
+    icons_dir = os.path.join(os.path.dirname(__file__), 'img')
+    for icon_file in ['icon-192.png', 'icon-512.png']:
+        icon_path = os.path.join(icons_dir, icon_file)
+        if os.path.exists(icon_path):
+            with open(icon_path, 'rb') as f:
+                s3.put_object(
+                    Bucket=bucket_name, Key=icon_file,
+                    Body=f.read(),
+                    ContentType='image/png',
+                    CacheControl='public, max-age=2592000',
+                )
+            print(f"Uploaded {icon_file}")
+        else:
+            print(f"WARNING: {icon_path} not found — run create_base64_images.py first")
+
+
 # Create a symbol, roughly:
 # 1. Use a pre-defined symbol
 # 2. Create a 2 letter symbol using first letters of words in name
@@ -833,6 +902,14 @@ def lambda_handler(event, context):
                 html = pystache.render(template, periodic_data)
                 html_files[filename] = html
     
+    # Upload PWA assets (manifest, service worker, icons)
+    if bucket:
+        cache_version = datetime.now().strftime('%Y-%m-%d')
+        try:
+            upload_pwa_assets(bucket, cache_version)
+        except Exception as e:
+            print(f"WARNING: Failed to upload PWA assets: {e}")
+
     # Speichern der generierten HTML-Dateien
     for filename, html_content in html_files.items():
         if bucket:  # Wenn S3-Bucket konfiguriert ist
