@@ -203,25 +203,23 @@ def check_esc_freshness(updated_str):
 
 
 def fetch_directory_items():
-    """Fetch all items from AWS Directory API using pagination (100 per page)."""
-    page_size = 100
-    from_idx = 0
-    all_items = []
-    while True:
-        url = f"{AWS_PRODUCTS_API_BASE}&size={page_size}&from={from_idx}"
-        try:
-            resp = get(url, headers=HEADERS, timeout=20)
-            resp.raise_for_status()
-            items = resp.json().get('items', [])
-        except Exception as e:
-            print(f"Failed to fetch directory API at from={from_idx}: {e}")
-            break
-        all_items.extend(items)
-        if len(items) < page_size:
-            break
-        from_idx += page_size
-    print(f"Fetched {len(all_items)} items from Directory API")
-    return all_items
+    """Fetch all items from AWS Directory API.
+    ponytail: AWS API silently returns 0 when 'from=' is passed — no cursor pagination.
+    Single request with size=500 (safe ceiling above current ~267 items).
+    """
+    url = f"{AWS_PRODUCTS_API_BASE}&size=500"
+    try:
+        resp = get(url, headers=HEADERS, timeout=20)
+        resp.raise_for_status()
+        items = resp.json().get('items', [])
+    except Exception as e:
+        print(f"Failed to fetch directory API: {e}")
+        return []
+    if len(items) >= 500:
+        print(f"WARNING: Directory API returned {len(items)} items (= size limit) — may be truncated, raise size")
+    else:
+        print(f"Fetched {len(items)} items from Directory API")
+    return items
 
 
 def generate_manifest():

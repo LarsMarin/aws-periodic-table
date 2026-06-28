@@ -9,29 +9,17 @@ def _mock_response(items):
     return r
 
 
-def test_fetch_directory_items_single_page():
-    """Fewer than 100 results → one request, no further pages fetched."""
-    items = [{'item': {'name': f's{i}', 'title': f'S{i}', 'additionalFields': {}}} for i in range(50)]
+def test_fetch_directory_items_returns_all_items():
+    """Single request with size=500; returns all items from API."""
+    items = [{'item': {'name': f's{i}', 'title': f'S{i}', 'additionalFields': {}}} for i in range(267)]
     with patch('lambda_handler.get', return_value=_mock_response(items)) as mock_get:
         from lambda_handler import fetch_directory_items
         result = fetch_directory_items()
-        assert len(result) == 50
+        assert len(result) == 267
         assert mock_get.call_count == 1
-
-
-def test_fetch_directory_items_paginates():
-    """Exactly 100 results → fetch next page; <100 on second page → stop."""
-    page1 = [{'item': {'name': f's{i}', 'title': f'S{i}', 'additionalFields': {}}} for i in range(100)]
-    page2 = [{'item': {'name': f's{i}', 'title': f'S{i}', 'additionalFields': {}}} for i in range(100, 143)]
-    responses = [_mock_response(page1), _mock_response(page2)]
-    with patch('lambda_handler.get', side_effect=responses) as mock_get:
-        from lambda_handler import fetch_directory_items
-        result = fetch_directory_items()
-        assert len(result) == 143
-        assert mock_get.call_count == 2
-        # Second call must use from=100
-        second_url = mock_get.call_args_list[1][0][0]
-        assert 'from=100' in second_url
+        url = mock_get.call_args[0][0]
+        assert 'size=500' in url
+        assert 'from=' not in url
 
 
 def test_fetch_directory_items_handles_error_gracefully():
