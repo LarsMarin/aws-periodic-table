@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   
   <!-- Security: Content Security Policy -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' fonts.googleapis.com; font-src fonts.gstatic.com; img-src 'self' https: data:; script-src 'unsafe-inline'; object-src 'none'; base-uri 'self'; form-action 'none';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' fonts.googleapis.com; font-src fonts.gstatic.com; img-src 'self' https: data:; script-src 'unsafe-inline'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none';">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
 
@@ -635,7 +635,7 @@
   </script>
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js');
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
     }
   </script>
 </head>
