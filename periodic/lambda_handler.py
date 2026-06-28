@@ -364,6 +364,8 @@ def get_data_from_directory():
     
     # Use AWS Products Directory endpoint to get services/features
     items = fetch_directory_items()
+    if len(items) < 50:
+        print(f"WARNING: Directory API returned only {len(items)} items — possible pagination failure or API issue")
 
     # Group items into categories using aws-technology-categories (preferred),
     # falling back to aws-tech-category / badge, else 'Other'.
@@ -551,6 +553,7 @@ def get_data_from_scrape():
 
             if not products_menu or 'subNav' not in products_menu:
                 print("Could not find Products menu")
+                return periodic
 
             # Process each category
             for cat_item in products_menu['subNav']:
