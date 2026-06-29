@@ -1,0 +1,172 @@
+{
+  "/Users/larsmarin/Documents/Workspaces/AWS/aws-periodic-table/.claude/settings.local.json": {
+    "mtime": 1782504670.5768402,
+    "ast_hash": "9063e9b0dca2cfdbe1c3f38232796d5f",
+    "semantic_hash": "9063e9b0dca2cfdbe1c3f38232796d5f"
+  },
+  "/Users/larsmarin/Documents/Workspaces/AWS/aws-periodic-table/.kilocode/package.json": {
+    "mtime": 1777407687.8146982,
+    "ast_hash": "73fb694ba32dfbc07be4703ddadb3ea9",
+    "semantic_hash": "73fb694ba32dfbc07be4703ddadb3ea9"
+  },
+  "/Users/larsmarin/Documents/Workspaces/AWS/aws-periodic-table/debug/check_all_services.py": {
+    "mtime": 1761050844.596514,
+    "ast_hash": "ef030812968d81dd3107f6cb8c0f8918",
+    "semantic_hash": "ef030812968d81dd3107f6cb8c0f8918"
+  },
+  "/Users/larsmarin/Documents/Workspaces/AWS/aws-periodic-table/debug/debug_scrape.py": {
+    "mtime": 1761050346.353613,
+    "ast_hash": "256ec12b89ac3dbb39f2ca8d6a151427",
+    "semantic_hash": "256ec12b89ac3dbb39f2ca8d6a151427"
+  },
+  "/Users/larsmarin/Documents/Workspaces/AWS/aws-periodic-table/debug/extract_json.py": {
+    "mtime": 1761050472.0685606,
+    "ast_hash": "3f8be9e72ccbebeb6d2133d169a23dc1",
+    "semantic_hash": "3f8be9e72ccbebeb6d2133d169a23dc1"
+  },
+  "/Users/larsmarin/Documents/Workspaces/AWS/aws-periodic-table/debug/extract_real_esc_services.py": {
+    "mtime": 1770415222.027426,
+    "ast_hash": "5f01e1cd543c11fc5a3fe1c63805e851",
+    "semantic_hash": "5f01e1cd543c11fc5a3fe1c63805e851"
+  },
+  "/Users/larsmarin/Documents/Workspaces/AWS/aws-periodic-table/debug/fetch_all_services.py": {
+    "mtime": 1761122767.5329971,
+    "ast_hash": "4913f2a7b535aa065ed2d9134b4cc464",
+    "semantic_hash": "4913f2a7b535aa065ed2d9134b4cc464"
+  },
+  "/Users/larsmarin/Documents/Workspaces/AWS/aws-periodic-table/debug/fetch_esc_from_builder.py": {
+    "mtime": 1770414279.6467113,
+    "ast_hash": "4dfc96aeb395d8a809b2f498064cf4e9",
+    "semantic_hash": "4dfc96aeb395d8a809b2f498064cf4e9"
+  },
+  "/Users/larsmarin/Documents/Workspaces/AWS/aws-periodic-table/debug/fetch_esc_services.py": {
+    "mtime": 1769703085.131244,
+    "ast_hash": "e20780df567adccaa37d1f178473865b",
+    "semantic_hash": "e20780df567adccaa37d1f178473865b"
+  },
+  "/Users/larsmarin/Documents/Workspaces/AWS/aws-periodic-table/debug/fetch_products_directory.py": {
+    "mtime": 1761142732.6285417,
+    "ast_hash": "4fb8129f643d3259a321478d7fcc928e",
+    "semantic_hash": "4fb8129f643d3259a321478d7fcc928e"
+  },
+  "/Users/larsmarin/Documents/Workspaces/AWS/aws-periodic-table/debug/test_local.py": {
+    "mtime": 1769631392.9953609,
+    "ast_hash": "1ae339e67f8dd40c77693e4629c89277",
+    "semantic_hash": "1ae339e67f8dd40c77693e4629c89277"
+  },
+  "/Users/larsmarin/Documents/Workspaces/AWS/aws-periodic-table/deploy.sh": {
+    "mtime": 1770497444.094751,
+    "ast_hash": "811a688938af8646bc7b84a194f4884c",
+    "semantic_hash": "811a688938af8646bc7b84a194f4884c"
+  },
+  "/Users/larsmarin/Documents/Workspaces/AWS/aws-periodic-table/infrastructure/build.sh": {
+    "mtime": 1761143525.5906773,
+    "ast_hash": "50c1b91165b5f7099d77b4c9da09ad7a",
+    "semantic_hash": "50c1b91165b5f7099d77b4c9da09ad7a"
+  },
+  "/Users/larsmarin/Documents/Workspaces/AWS/aws-periodic-table/infrastructure/configure-s3-website.sh": {
+    "mtime": 1761051966.5210884,
+    "ast_hash": "bcc1e08039a9904025e6adafb7d9177b",
+    "semantic_hash": "bcc1e08039a9904025e6adafb7d9177b"
+  },
+  "/Users/larsmarin/Documents/Workspaces/AWS/aws-periodic-table/infrastructure/setup-cloudfront.sh": {
+    "mtime": 1761137662.7675855,
+    "ast_hash": "fbb0b0d2e9a85af8e1bbd599b30a0de9",
+    "semantic_hash": "fbb0b0d2e9a85af8e1bbd599b30a0de9"
+  },
+  "/Users/larsmarin/Documents/Workspaces/AWS/aws-periodic-table/infrastructure/setup-dns.sh": {
+    "mtime": 1761052211.2970898,
+    "ast_hash": "8c975151247b7e8c4336a8e4a4708563",
+    "semantic_hash": "8c975151247b7e8c4336a8e4a4708563"
+  },
+  "/Users/larsmarin/Documents/Workspaces/AWS/aws-periodic-table/periodic/base64_images.py": {
+    "mtime": 1769631007.0522559,
+    "ast_hash": "32e77b4f76ea5ca22edba1a0a27d554c",
+    "semantic_hash": "32e77b4f76ea5ca22edba1a0a27d554c"
+  },
+  "/Users/larsmarin/Documents/Workspaces/AWS/aws-periodic-table/periodic/create_base64_images.py": {
+    "mtime": 1763897754.115429,
+    "ast_hash": "09fce3d2c2205168be97c382fd40325b",
+    "semantic_hash": "09fce3d2c2205168be97c382fd40325b"
+  },
+  "/Users/larsmarin/Documents/Workspaces/AWS/aws-periodic-table/periodic/esc_services.json": {
+    "mtime": 1770415260.8162682,
+    "ast_hash": "c91f878f24478f4ea025cfd1bac01b89",
+    "semantic_hash": "c91f878f24478f4ea025cfd1bac01b89"
+  },
+  "/Users/larsmarin/Documents/Workspaces/AWS/aws-periodic-table/periodic/lambda_handler.py": {
+    "mtime": 1770483971.9765828,
+    "ast_hash": "c4621572f5881a3fc17a5fc1b65b2276",
+    "semantic_hash": "c4621572f5881a3fc17a5fc1b65b2276"
+  },
+  "/Users/larsmarin/Documents/Workspaces/AWS/aws-periodic-table/setup-buckets.sh": {
+    "mtime": 1763896072.7782404,
+    "ast_hash": "6a57606c83e0113ad0e54a2566ae4a8c",
+    "semantic_hash": "6a57606c83e0113ad0e54a2566ae4a8c"
+  },
+  "/Users/larsmarin/Documents/Workspaces/AWS/aws-periodic-table/CLAUDE.md": {
+    "mtime": 1782503826.9962578,
+    "ast_hash": "46a595edde4f02c4ab13a595ddc47268",
+    "semantic_hash": "46a595edde4f02c4ab13a595ddc47268"
+  },
+  "/Users/larsmarin/Documents/Workspaces/AWS/aws-periodic-table/CONTRIBUTING.md": {
+    "mtime": 1763839447.184725,
+    "ast_hash": "0d9ec305e0885f4bac9b060598d1fa5a",
+    "semantic_hash": "0d9ec305e0885f4bac9b060598d1fa5a"
+  },
+  "/Users/larsmarin/Documents/Workspaces/AWS/aws-periodic-table/ESC_SERVICES_OVERVIEW.md": {
+    "mtime": 1770415292.4713476,
+    "ast_hash": "4ab4ef41e06d4f6f7993d3a721053e56",
+    "semantic_hash": "4ab4ef41e06d4f6f7993d3a721053e56"
+  },
+  "/Users/larsmarin/Documents/Workspaces/AWS/aws-periodic-table/README.md": {
+    "mtime": 1769631074.1660824,
+    "ast_hash": "cf320c6bcda1fcc8686732d6e739a8b8",
+    "semantic_hash": "cf320c6bcda1fcc8686732d6e739a8b8"
+  },
+  "/Users/larsmarin/Documents/Workspaces/AWS/aws-periodic-table/SECURITY_HEADERS.md": {
+    "mtime": 1770495604.8207223,
+    "ast_hash": "28873ea4f1ab82e8b8af9df5d677ff3c",
+    "semantic_hash": "28873ea4f1ab82e8b8af9df5d677ff3c"
+  },
+  "/Users/larsmarin/Documents/Workspaces/AWS/aws-periodic-table/infrastructure/cloudfront.yaml": {
+    "mtime": 1761140976.3657541,
+    "ast_hash": "a36f8e2d8674c188dbd20693bd63c38e",
+    "semantic_hash": "a36f8e2d8674c188dbd20693bd63c38e"
+  },
+  "/Users/larsmarin/Documents/Workspaces/AWS/aws-periodic-table/infrastructure/route53.yaml": {
+    "mtime": 1761081460.6144238,
+    "ast_hash": "24acc76ffecc54e64e9e7bd5dbd142f8",
+    "semantic_hash": "24acc76ffecc54e64e9e7bd5dbd142f8"
+  },
+  "/Users/larsmarin/Documents/Workspaces/AWS/aws-periodic-table/infrastructure/template.yaml": {
+    "mtime": 1769632659.536407,
+    "ast_hash": "0f16a605a2f142fb3bb5bc8746c6298e",
+    "semantic_hash": "0f16a605a2f142fb3bb5bc8746c6298e"
+  },
+  "/Users/larsmarin/Documents/Workspaces/AWS/aws-periodic-table/periodic/ESC_SERVICES_README.md": {
+    "mtime": 1770416119.2700458,
+    "ast_hash": "9416d76e77e2396e8f1577c368975de0",
+    "semantic_hash": "9416d76e77e2396e8f1577c368975de0"
+  },
+  "/Users/larsmarin/Documents/Workspaces/AWS/aws-periodic-table/periodic/lambda_deployment_instructions.md": {
+    "mtime": 1763845372.418437,
+    "ast_hash": "d43c47e4c2d6b50dabf572640ad64e75",
+    "semantic_hash": "d43c47e4c2d6b50dabf572640ad64e75"
+  },
+  "/Users/larsmarin/Documents/Workspaces/AWS/aws-periodic-table/periodic/requirements.txt": {
+    "mtime": 1770495072.6156502,
+    "ast_hash": "5f4ba233960132369ed4408fd3973e5e",
+    "semantic_hash": "5f4ba233960132369ed4408fd3973e5e"
+  },
+  "/Users/larsmarin/Documents/Workspaces/AWS/aws-periodic-table/periodic/img/favicon.png": {
+    "mtime": 1763810019.9003725,
+    "ast_hash": "f2d6d24b770a856d948cdd5556f3cbd2",
+    "semantic_hash": "f2d6d24b770a856d948cdd5556f3cbd2"
+  },
+  "/Users/larsmarin/Documents/Workspaces/AWS/aws-periodic-table/periodic/img/tecracer_logo_rakete.png": {
+    "mtime": 1763741853.542642,
+    "ast_hash": "925ffd6b157d7e5c822880b643206c4a",
+    "semantic_hash": "925ffd6b157d7e5c822880b643206c4a"
+  }
+}

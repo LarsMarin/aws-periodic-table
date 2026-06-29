@@ -1,0 +1,2471 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {
+    "hyperedges": [
+      {
+        "id": "esc_data_pipeline",
+        "label": "ESC Service Filtering Pipeline",
+        "nodes": [
+          "claude_md_get_data_from_esc",
+          "periodic_esc_services_readme_esc_services_json",
+          "esc_services_overview_md_esc_cloud",
+          "periodic_esc_services_readme_filter_logic"
+        ],
+        "relation": "participate_in",
+        "confidence": "EXTRACTED",
+        "confidence_score": 0.95,
+        "source_file": "CLAUDE.md"
+      },
+      {
+        "id": "lambda_deploy_schedule_flow",
+        "label": "Lambda Deployment and Monthly Schedule Flow",
+        "nodes": [
+          "claude_md_deploy_sh",
+          "infrastructure_template_product_scraper",
+          "infrastructure_template_product_scraper_schedule",
+          "infrastructure_template_product_scraper_role"
+        ],
+        "relation": "form",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0,
+        "source_file": "infrastructure/template.yaml"
+      },
+      {
+        "id": "cloudfront_secure_delivery",
+        "label": "CloudFront Secure Content Delivery Setup",
+        "nodes": [
+          "infrastructure_cloudfront_distribution",
+          "infrastructure_cloudfront_oac",
+          "infrastructure_cloudfront_bucket_policy",
+          "security_headers_md_config"
+        ],
+        "relation": "implement",
+        "confidence": "INFERRED",
+        "confidence_score": 0.85,
+        "source_file": "infrastructure/cloudfront.yaml"
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "label": "settings.local.json",
+      "file_type": "code",
+      "source_file": ".claude/settings.local.json",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "claude_settings_local",
+      "community": 11,
+      "norm_label": "settings.local.json"
+    },
+    {
+      "label": "permissions",
+      "file_type": "code",
+      "source_file": ".claude/settings.local.json",
+      "source_location": "L2",
+      "_origin": "ast",
+      "id": "claude_settings_local_permissions",
+      "community": 11,
+      "norm_label": "permissions"
+    },
+    {
+      "label": "allow",
+      "file_type": "code",
+      "source_file": ".claude/settings.local.json",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "claude_settings_local_permissions_allow",
+      "community": 11,
+      "norm_label": "allow"
+    },
+    {
+      "label": "package.json",
+      "file_type": "code",
+      "source_file": ".kilocode/package.json",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "kilocode_package",
+      "community": 16,
+      "norm_label": "package.json"
+    },
+    {
+      "label": "dependencies",
+      "file_type": "code",
+      "source_file": ".kilocode/package.json",
+      "source_location": "L2",
+      "_origin": "ast",
+      "id": "kilocode_package_dependencies",
+      "community": 16,
+      "norm_label": "dependencies"
+    },
+    {
+      "label": "@kilocode/plugin",
+      "file_type": "code",
+      "source_file": ".kilocode/package.json",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "kilocode_package_dependencies_kilocode_plugin",
+      "community": 16,
+      "norm_label": "@kilocode/plugin"
+    },
+    {
+      "label": "check_all_services.py",
+      "file_type": "code",
+      "source_file": "debug/check_all_services.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "debug_check_all_services",
+      "community": 24,
+      "norm_label": "check_all_services.py"
+    },
+    {
+      "label": "debug_scrape.py",
+      "file_type": "code",
+      "source_file": "debug/debug_scrape.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "debug_debug_scrape",
+      "community": 25,
+      "norm_label": "debug_scrape.py"
+    },
+    {
+      "label": "extract_json.py",
+      "file_type": "code",
+      "source_file": "debug/extract_json.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "debug_extract_json",
+      "community": 26,
+      "norm_label": "extract_json.py"
+    },
+    {
+      "label": "extract_real_esc_services.py",
+      "file_type": "code",
+      "source_file": "debug/extract_real_esc_services.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "debug_extract_real_esc_services",
+      "community": 12,
+      "norm_label": "extract_real_esc_services.py"
+    },
+    {
+      "label": "fetch_esc_services()",
+      "file_type": "code",
+      "source_file": "debug/extract_real_esc_services.py",
+      "source_location": "L17",
+      "_origin": "ast",
+      "id": "debug_extract_real_esc_services_fetch_esc_services",
+      "community": 12,
+      "norm_label": "fetch_esc_services()"
+    },
+    {
+      "label": "Fetch ESC services from docs.aws.eu",
+      "file_type": "rationale",
+      "source_file": "debug/extract_real_esc_services.py",
+      "source_location": "L18",
+      "_origin": "ast",
+      "id": "debug_extract_real_esc_services_rationale_18",
+      "community": 12,
+      "norm_label": "fetch esc services from docs.aws.eu"
+    },
+    {
+      "label": "fetch_all_services.py",
+      "file_type": "code",
+      "source_file": "debug/fetch_all_services.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "debug_fetch_all_services",
+      "community": 27,
+      "norm_label": "fetch_all_services.py"
+    },
+    {
+      "label": "fetch_esc_from_builder.py",
+      "file_type": "code",
+      "source_file": "debug/fetch_esc_from_builder.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "debug_fetch_esc_from_builder",
+      "community": 13,
+      "norm_label": "fetch_esc_from_builder.py"
+    },
+    {
+      "label": "fetch_esc_services()",
+      "file_type": "code",
+      "source_file": "debug/fetch_esc_from_builder.py",
+      "source_location": "L8",
+      "_origin": "ast",
+      "id": "debug_fetch_esc_from_builder_fetch_esc_services",
+      "community": 13,
+      "norm_label": "fetch_esc_services()"
+    },
+    {
+      "label": "Fetch services available in eusc-de-east-1 from AWS Builder API",
+      "file_type": "rationale",
+      "source_file": "debug/fetch_esc_from_builder.py",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "debug_fetch_esc_from_builder_rationale_9",
+      "community": 13,
+      "norm_label": "fetch services available in eusc-de-east-1 from aws builder api"
+    },
+    {
+      "label": "fetch_esc_services.py",
+      "file_type": "code",
+      "source_file": "debug/fetch_esc_services.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "debug_fetch_esc_services",
+      "community": 14,
+      "norm_label": "fetch_esc_services.py"
+    },
+    {
+      "label": "fetch_esc_services()",
+      "file_type": "code",
+      "source_file": "debug/fetch_esc_services.py",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "debug_fetch_esc_services_fetch_esc_services",
+      "community": 14,
+      "norm_label": "fetch_esc_services()"
+    },
+    {
+      "label": "Fetch ESC services from AWS Builder API",
+      "file_type": "rationale",
+      "source_file": "debug/fetch_esc_services.py",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "debug_fetch_esc_services_rationale_10",
+      "community": 14,
+      "norm_label": "fetch esc services from aws builder api"
+    },
+    {
+      "label": "fetch_products_directory.py",
+      "file_type": "code",
+      "source_file": "debug/fetch_products_directory.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "debug_fetch_products_directory",
+      "community": 7,
+      "norm_label": "fetch_products_directory.py"
+    },
+    {
+      "label": "fetch_products()",
+      "file_type": "code",
+      "source_file": "debug/fetch_products_directory.py",
+      "source_location": "L49",
+      "_origin": "ast",
+      "id": "debug_fetch_products_directory_fetch_products",
+      "community": 7,
+      "norm_label": "fetch_products()"
+    },
+    {
+      "label": "load_json()",
+      "file_type": "code",
+      "source_file": "debug/fetch_products_directory.py",
+      "source_location": "L114",
+      "_origin": "ast",
+      "id": "debug_fetch_products_directory_load_json",
+      "community": 7,
+      "norm_label": "load_json()"
+    },
+    {
+      "label": "merge_lists()",
+      "file_type": "code",
+      "source_file": "debug/fetch_products_directory.py",
+      "source_location": "L122",
+      "_origin": "ast",
+      "id": "debug_fetch_products_directory_merge_lists",
+      "community": 7,
+      "norm_label": "merge_lists()"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "debug/fetch_products_directory.py",
+      "source_location": "L183",
+      "_origin": "ast",
+      "id": "debug_fetch_products_directory_main",
+      "community": 7,
+      "norm_label": "main()"
+    },
+    {
+      "label": "test_local.py",
+      "file_type": "code",
+      "source_file": "debug/test_local.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "debug_test_local",
+      "community": 18,
+      "norm_label": "test_local.py"
+    },
+    {
+      "label": "save_html()",
+      "file_type": "code",
+      "source_file": "debug/test_local.py",
+      "source_location": "L30",
+      "_origin": "ast",
+      "id": "debug_test_local_save_html",
+      "community": 18,
+      "norm_label": "save_html()"
+    },
+    {
+      "label": "deploy.sh",
+      "file_type": "code",
+      "source_file": "deploy.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "file"
+      },
+      "_origin": "ast",
+      "id": "deploy",
+      "community": 5,
+      "norm_label": "deploy.sh"
+    },
+    {
+      "label": "deploy.sh script",
+      "file_type": "code",
+      "source_file": "deploy.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_entrypoint"
+      },
+      "_origin": "ast",
+      "id": "users_larsmarin_documents_workspaces_aws_aws_periodic_table_deploy_sh__entry",
+      "community": 5,
+      "norm_label": "deploy.sh script"
+    },
+    {
+      "label": "print_info()",
+      "file_type": "code",
+      "source_file": "deploy.sh",
+      "source_location": "L15",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "deploy_print_info",
+      "community": 5,
+      "norm_label": "print_info()"
+    },
+    {
+      "label": "print_error()",
+      "file_type": "code",
+      "source_file": "deploy.sh",
+      "source_location": "L19",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "deploy_print_error",
+      "community": 5,
+      "norm_label": "print_error()"
+    },
+    {
+      "label": "print_warning()",
+      "file_type": "code",
+      "source_file": "deploy.sh",
+      "source_location": "L23",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "deploy_print_warning",
+      "community": 5,
+      "norm_label": "print_warning()"
+    },
+    {
+      "label": "usage()",
+      "file_type": "code",
+      "source_file": "deploy.sh",
+      "source_location": "L28",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "deploy_usage",
+      "community": 5,
+      "norm_label": "usage()"
+    },
+    {
+      "label": "build.sh",
+      "file_type": "code",
+      "source_file": "infrastructure/build.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "file"
+      },
+      "_origin": "ast",
+      "id": "infrastructure_build",
+      "community": 19,
+      "norm_label": "build.sh"
+    },
+    {
+      "label": "build.sh script",
+      "file_type": "code",
+      "source_file": "infrastructure/build.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_entrypoint"
+      },
+      "_origin": "ast",
+      "id": "users_larsmarin_documents_workspaces_aws_aws_periodic_table_infrastructure_build_sh__entry",
+      "community": 19,
+      "norm_label": "build.sh script"
+    },
+    {
+      "label": "configure-s3-website.sh",
+      "file_type": "code",
+      "source_file": "infrastructure/configure-s3-website.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "file"
+      },
+      "_origin": "ast",
+      "id": "infrastructure_configure_s3_website",
+      "community": 20,
+      "norm_label": "configure-s3-website.sh"
+    },
+    {
+      "label": "configure-s3-website.sh script",
+      "file_type": "code",
+      "source_file": "infrastructure/configure-s3-website.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_entrypoint"
+      },
+      "_origin": "ast",
+      "id": "users_larsmarin_documents_workspaces_aws_aws_periodic_table_infrastructure_configure_s3_website_sh__entry",
+      "community": 20,
+      "norm_label": "configure-s3-website.sh script"
+    },
+    {
+      "label": "setup-cloudfront.sh",
+      "file_type": "code",
+      "source_file": "infrastructure/setup-cloudfront.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "file"
+      },
+      "_origin": "ast",
+      "id": "infrastructure_setup_cloudfront",
+      "community": 22,
+      "norm_label": "setup-cloudfront.sh"
+    },
+    {
+      "label": "setup-cloudfront.sh script",
+      "file_type": "code",
+      "source_file": "infrastructure/setup-cloudfront.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_entrypoint"
+      },
+      "_origin": "ast",
+      "id": "users_larsmarin_documents_workspaces_aws_aws_periodic_table_infrastructure_setup_cloudfront_sh__entry",
+      "community": 22,
+      "norm_label": "setup-cloudfront.sh script"
+    },
+    {
+      "label": "setup-dns.sh",
+      "file_type": "code",
+      "source_file": "infrastructure/setup-dns.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "file"
+      },
+      "_origin": "ast",
+      "id": "infrastructure_setup_dns",
+      "community": 23,
+      "norm_label": "setup-dns.sh"
+    },
+    {
+      "label": "setup-dns.sh script",
+      "file_type": "code",
+      "source_file": "infrastructure/setup-dns.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_entrypoint"
+      },
+      "_origin": "ast",
+      "id": "users_larsmarin_documents_workspaces_aws_aws_periodic_table_infrastructure_setup_dns_sh__entry",
+      "community": 23,
+      "norm_label": "setup-dns.sh script"
+    },
+    {
+      "label": "base64_images.py",
+      "file_type": "code",
+      "source_file": "periodic/base64_images.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "periodic_base64_images",
+      "community": 29,
+      "norm_label": "base64_images.py"
+    },
+    {
+      "label": "create_base64_images.py",
+      "file_type": "code",
+      "source_file": "periodic/create_base64_images.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "periodic_create_base64_images",
+      "community": 30,
+      "norm_label": "create_base64_images.py"
+    },
+    {
+      "label": "esc_services.json",
+      "file_type": "code",
+      "source_file": "periodic/esc_services.json",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "periodic_esc_services",
+      "community": 0,
+      "norm_label": "esc_services.json"
+    },
+    {
+      "label": "metadata",
+      "file_type": "code",
+      "source_file": "periodic/esc_services.json",
+      "source_location": "L2",
+      "_origin": "ast",
+      "id": "periodic_esc_services_metadata",
+      "community": 0,
+      "norm_label": "metadata"
+    },
+    {
+      "label": "last_updated",
+      "file_type": "code",
+      "source_file": "periodic/esc_services.json",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "periodic_esc_services_metadata_last_updated",
+      "community": 0,
+      "norm_label": "last_updated"
+    },
+    {
+      "label": "source",
+      "file_type": "code",
+      "source_file": "periodic/esc_services.json",
+      "source_location": "L4",
+      "_origin": "ast",
+      "id": "periodic_esc_services_metadata_source",
+      "community": 0,
+      "norm_label": "source"
+    },
+    {
+      "label": "region",
+      "file_type": "code",
+      "source_file": "periodic/esc_services.json",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "periodic_esc_services_metadata_region",
+      "community": 0,
+      "norm_label": "region"
+    },
+    {
+      "label": "total_services",
+      "file_type": "code",
+      "source_file": "periodic/esc_services.json",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "periodic_esc_services_metadata_total_services",
+      "community": 0,
+      "norm_label": "total_services"
+    },
+    {
+      "label": "description",
+      "file_type": "code",
+      "source_file": "periodic/esc_services.json",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "periodic_esc_services_metadata_description",
+      "community": 0,
+      "norm_label": "description"
+    },
+    {
+      "label": "services",
+      "file_type": "code",
+      "source_file": "periodic/esc_services.json",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "periodic_esc_services_services",
+      "community": 0,
+      "norm_label": "services"
+    },
+    {
+      "label": "planned_services",
+      "file_type": "code",
+      "source_file": "periodic/esc_services.json",
+      "source_location": "L105",
+      "_origin": "ast",
+      "id": "periodic_esc_services_planned_services",
+      "community": 0,
+      "norm_label": "planned_services"
+    },
+    {
+      "label": "Q1_2026",
+      "file_type": "code",
+      "source_file": "periodic/esc_services.json",
+      "source_location": "L106",
+      "_origin": "ast",
+      "id": "periodic_esc_services_planned_services_q1_2026",
+      "community": 0,
+      "norm_label": "q1_2026"
+    },
+    {
+      "label": "future",
+      "file_type": "code",
+      "source_file": "periodic/esc_services.json",
+      "source_location": "L109",
+      "_origin": "ast",
+      "id": "periodic_esc_services_planned_services_future",
+      "community": 0,
+      "norm_label": "future"
+    },
+    {
+      "label": "regions",
+      "file_type": "code",
+      "source_file": "periodic/esc_services.json",
+      "source_location": "L113",
+      "_origin": "ast",
+      "id": "periodic_esc_services_regions",
+      "community": 0,
+      "norm_label": "regions"
+    },
+    {
+      "label": "available",
+      "file_type": "code",
+      "source_file": "periodic/esc_services.json",
+      "source_location": "L114",
+      "_origin": "ast",
+      "id": "periodic_esc_services_regions_available",
+      "community": 0,
+      "norm_label": "available"
+    },
+    {
+      "label": "planned",
+      "file_type": "code",
+      "source_file": "periodic/esc_services.json",
+      "source_location": "L117",
+      "_origin": "ast",
+      "id": "periodic_esc_services_regions_planned",
+      "community": 0,
+      "norm_label": "planned"
+    },
+    {
+      "label": "lambda_handler.py",
+      "file_type": "code",
+      "source_file": "periodic/lambda_handler.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "periodic_lambda_handler",
+      "community": 1,
+      "norm_label": "lambda_handler.py"
+    },
+    {
+      "label": "load_esc_services()",
+      "file_type": "code",
+      "source_file": "periodic/lambda_handler.py",
+      "source_location": "L88",
+      "_origin": "ast",
+      "id": "periodic_lambda_handler_load_esc_services",
+      "community": 1,
+      "norm_label": "load_esc_services()"
+    },
+    {
+      "label": "parse_name()",
+      "file_type": "code",
+      "source_file": "periodic/lambda_handler.py",
+      "source_location": "L173",
+      "_origin": "ast",
+      "id": "periodic_lambda_handler_parse_name",
+      "community": 1,
+      "norm_label": "parse_name()"
+    },
+    {
+      "label": "create_symbol()",
+      "file_type": "code",
+      "source_file": "periodic/lambda_handler.py",
+      "source_location": "L184",
+      "_origin": "ast",
+      "id": "periodic_lambda_handler_create_symbol",
+      "community": 1,
+      "norm_label": "create_symbol()"
+    },
+    {
+      "label": "get_data_from_directory()",
+      "file_type": "code",
+      "source_file": "periodic/lambda_handler.py",
+      "source_location": "L239",
+      "_origin": "ast",
+      "id": "periodic_lambda_handler_get_data_from_directory",
+      "community": 1,
+      "norm_label": "get_data_from_directory()"
+    },
+    {
+      "label": "get_data_from_scrape()",
+      "file_type": "code",
+      "source_file": "periodic/lambda_handler.py",
+      "source_location": "L396",
+      "_origin": "ast",
+      "id": "periodic_lambda_handler_get_data_from_scrape",
+      "community": 1,
+      "norm_label": "get_data_from_scrape()"
+    },
+    {
+      "label": "get_data_from_esc()",
+      "file_type": "code",
+      "source_file": "periodic/lambda_handler.py",
+      "source_location": "L506",
+      "_origin": "ast",
+      "id": "periodic_lambda_handler_get_data_from_esc",
+      "community": 1,
+      "norm_label": "get_data_from_esc()"
+    },
+    {
+      "label": "compute_positions()",
+      "file_type": "code",
+      "source_file": "periodic/lambda_handler.py",
+      "source_location": "L611",
+      "_origin": "ast",
+      "id": "periodic_lambda_handler_compute_positions",
+      "community": 1,
+      "norm_label": "compute_positions()"
+    },
+    {
+      "label": "lambda_handler()",
+      "file_type": "code",
+      "source_file": "periodic/lambda_handler.py",
+      "source_location": "L673",
+      "_origin": "ast",
+      "id": "periodic_lambda_handler_lambda_handler",
+      "community": 1,
+      "norm_label": "lambda_handler()"
+    },
+    {
+      "label": "Load the list of services available in AWS European Sovereign Cloud.     Fetches",
+      "file_type": "rationale",
+      "source_file": "periodic/lambda_handler.py",
+      "source_location": "L89",
+      "_origin": "ast",
+      "id": "periodic_lambda_handler_rationale_89",
+      "community": 1,
+      "norm_label": "load the list of services available in aws european sovereign cloud.     fetches"
+    },
+    {
+      "label": "setup-buckets.sh",
+      "file_type": "code",
+      "source_file": "setup-buckets.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "file"
+      },
+      "_origin": "ast",
+      "id": "setup_buckets",
+      "community": 6,
+      "norm_label": "setup-buckets.sh"
+    },
+    {
+      "label": "setup-buckets.sh script",
+      "file_type": "code",
+      "source_file": "setup-buckets.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_entrypoint"
+      },
+      "_origin": "ast",
+      "id": "users_larsmarin_documents_workspaces_aws_aws_periodic_table_setup_buckets_sh__entry",
+      "community": 6,
+      "norm_label": "setup-buckets.sh script"
+    },
+    {
+      "label": "print_info()",
+      "file_type": "code",
+      "source_file": "setup-buckets.sh",
+      "source_location": "L14",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "setup_buckets_print_info",
+      "community": 6,
+      "norm_label": "print_info()"
+    },
+    {
+      "label": "print_error()",
+      "file_type": "code",
+      "source_file": "setup-buckets.sh",
+      "source_location": "L18",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "setup_buckets_print_error",
+      "community": 6,
+      "norm_label": "print_error()"
+    },
+    {
+      "label": "print_warning()",
+      "file_type": "code",
+      "source_file": "setup-buckets.sh",
+      "source_location": "L22",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "setup_buckets_print_warning",
+      "community": 6,
+      "norm_label": "print_warning()"
+    },
+    {
+      "label": "usage()",
+      "file_type": "code",
+      "source_file": "setup-buckets.sh",
+      "source_location": "L26",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "setup_buckets_usage",
+      "community": 6,
+      "norm_label": "usage()"
+    },
+    {
+      "label": "AWS Periodic Table Project (CLAUDE.md)",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "claude_md_project",
+      "community": 10,
+      "norm_label": "aws periodic table project (claude.md)"
+    },
+    {
+      "label": "get_data_from_directory (Directory API fetch)",
+      "file_type": "concept",
+      "source_file": "CLAUDE.md",
+      "source_location": "line 89",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "claude_md_get_data_from_directory",
+      "community": 9,
+      "norm_label": "get_data_from_directory (directory api fetch)"
+    },
+    {
+      "label": "get_data_from_scrape (Web Scraping fetch)",
+      "file_type": "concept",
+      "source_file": "CLAUDE.md",
+      "source_location": "line 98",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "claude_md_get_data_from_scrape",
+      "community": 9,
+      "norm_label": "get_data_from_scrape (web scraping fetch)"
+    },
+    {
+      "label": "get_data_from_esc (ESC Filter function)",
+      "file_type": "concept",
+      "source_file": "CLAUDE.md",
+      "source_location": "line 102",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "claude_md_get_data_from_esc",
+      "community": 3,
+      "norm_label": "get_data_from_esc (esc filter function)"
+    },
+    {
+      "label": "create_symbol (Service Symbol Generator)",
+      "file_type": "concept",
+      "source_file": "CLAUDE.md",
+      "source_location": "line 112",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "claude_md_create_symbol",
+      "community": 17,
+      "norm_label": "create_symbol (service symbol generator)"
+    },
+    {
+      "label": "compute_positions (Grid Layout Mapper)",
+      "file_type": "concept",
+      "source_file": "CLAUDE.md",
+      "source_location": "line 122",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "claude_md_compute_positions",
+      "community": 8,
+      "norm_label": "compute_positions (grid layout mapper)"
+    },
+    {
+      "label": "base_template.mustache (Base HTML Template)",
+      "file_type": "concept",
+      "source_file": "CLAUDE.md",
+      "source_location": "line 168",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "claude_md_base_template_mustache",
+      "community": 8,
+      "norm_label": "base_template.mustache (base html template)"
+    },
+    {
+      "label": "template.mustache (Periodic Table Grid Template)",
+      "file_type": "concept",
+      "source_file": "CLAUDE.md",
+      "source_location": "line 170",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "claude_md_template_mustache",
+      "community": 8,
+      "norm_label": "template.mustache (periodic table grid template)"
+    },
+    {
+      "label": "deploy.sh (Deployment Script)",
+      "file_type": "concept",
+      "source_file": "CLAUDE.md",
+      "source_location": "line 39",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "claude_md_deploy_sh",
+      "community": 4,
+      "norm_label": "deploy.sh (deployment script)"
+    },
+    {
+      "label": "esc_services.json (ESC Service List Fallback File)",
+      "file_type": "concept",
+      "source_file": "CLAUDE.md",
+      "source_location": "line 106",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "claude_md_esc_services_json",
+      "community": 3,
+      "norm_label": "esc_services.json (esc service list fallback file)"
+    },
+    {
+      "label": "reserved_symbols (Known Service Symbols Dictionary)",
+      "file_type": "rationale",
+      "source_file": "CLAUDE.md",
+      "source_location": "line 118",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Maintains a hardcoded map of service names to canonical two-letter symbols (e.g. EC2\u2192Ec2, S3\u2192S3) to ensure stable, recognisable symbols across data-source changes.",
+      "id": "claude_md_reserved_symbols",
+      "community": 17,
+      "norm_label": "reserved_symbols (known service symbols dictionary)"
+    },
+    {
+      "label": "AWS Periodic Table README",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme_md_project",
+      "community": 10,
+      "norm_label": "aws periodic table readme"
+    },
+    {
+      "label": "Contributing Guide",
+      "file_type": "document",
+      "source_file": "CONTRIBUTING.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "contributing_md_guide",
+      "community": 10,
+      "norm_label": "contributing guide"
+    },
+    {
+      "label": "AWS European Sovereign Cloud (ESC) Services Overview",
+      "file_type": "document",
+      "source_file": "ESC_SERVICES_OVERVIEW.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "esc_services_overview_md_esc_cloud",
+      "community": 3,
+      "norm_label": "aws european sovereign cloud (esc) services overview"
+    },
+    {
+      "label": "eusc-de-east-1 (ESC Region, Brandenburg Germany)",
+      "file_type": "concept",
+      "source_file": "ESC_SERVICES_OVERVIEW.md",
+      "source_location": "line 143",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "esc_services_overview_md_eusc_de_east_1",
+      "community": 3,
+      "norm_label": "eusc-de-east-1 (esc region, brandenburg germany)"
+    },
+    {
+      "label": "Security Headers Configuration Guide",
+      "file_type": "document",
+      "source_file": "SECURITY_HEADERS.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "security_headers_md_config",
+      "community": 2,
+      "norm_label": "security headers configuration guide"
+    },
+    {
+      "label": "Content-Security-Policy Header",
+      "file_type": "concept",
+      "source_file": "SECURITY_HEADERS.md",
+      "source_location": "line 17",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "security_headers_md_csp",
+      "community": 2,
+      "norm_label": "content-security-policy header"
+    },
+    {
+      "label": "Strict-Transport-Security (HSTS) Header",
+      "file_type": "concept",
+      "source_file": "SECURITY_HEADERS.md",
+      "source_location": "line 24",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "security_headers_md_hsts",
+      "community": 2,
+      "norm_label": "strict-transport-security (hsts) header"
+    },
+    {
+      "label": "Permissions-Policy Header",
+      "file_type": "concept",
+      "source_file": "SECURITY_HEADERS.md",
+      "source_location": "line 29",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "security_headers_md_permissions_policy",
+      "community": 2,
+      "norm_label": "permissions-policy header"
+    },
+    {
+      "label": "CloudFrontDistribution (CloudFront CF Resource)",
+      "file_type": "document",
+      "source_file": "infrastructure/cloudfront.yaml",
+      "source_location": "line 41",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "infrastructure_cloudfront_distribution",
+      "community": 2,
+      "norm_label": "cloudfrontdistribution (cloudfront cf resource)"
+    },
+    {
+      "label": "Certificate (ACM TLS Certificate CF Resource)",
+      "file_type": "document",
+      "source_file": "infrastructure/cloudfront.yaml",
+      "source_location": "line 19",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "infrastructure_cloudfront_certificate",
+      "community": 2,
+      "norm_label": "certificate (acm tls certificate cf resource)"
+    },
+    {
+      "label": "CloudFrontOAC (Origin Access Control CF Resource)",
+      "file_type": "document",
+      "source_file": "infrastructure/cloudfront.yaml",
+      "source_location": "line 32",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "infrastructure_cloudfront_oac",
+      "community": 2,
+      "norm_label": "cloudfrontoac (origin access control cf resource)"
+    },
+    {
+      "label": "BucketPolicy (S3 OAC Access Policy CF Resource)",
+      "file_type": "document",
+      "source_file": "infrastructure/cloudfront.yaml",
+      "source_location": "line 68",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "infrastructure_cloudfront_bucket_policy",
+      "community": 2,
+      "norm_label": "bucketpolicy (s3 oac access policy cf resource)"
+    },
+    {
+      "label": "RootDomainRecord (Route53 A-record to S3 website)",
+      "file_type": "document",
+      "source_file": "infrastructure/route53.yaml",
+      "source_location": "line 14",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "infrastructure_route53_root_record",
+      "community": 21,
+      "norm_label": "rootdomainrecord (route53 a-record to s3 website)"
+    },
+    {
+      "label": "WWWDomainRecord (Route53 CNAME to root)",
+      "file_type": "document",
+      "source_file": "infrastructure/route53.yaml",
+      "source_location": "line 23",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "infrastructure_route53_www_record",
+      "community": 21,
+      "norm_label": "wwwdomainrecord (route53 cname to root)"
+    },
+    {
+      "label": "ProductScraper (Lambda Function CF Resource)",
+      "file_type": "document",
+      "source_file": "infrastructure/template.yaml",
+      "source_location": "line 48",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "infrastructure_template_product_scraper",
+      "community": 4,
+      "norm_label": "productscraper (lambda function cf resource)"
+    },
+    {
+      "label": "ProductScraperRole (IAM Execution Role CF Resource)",
+      "file_type": "document",
+      "source_file": "infrastructure/template.yaml",
+      "source_location": "line 11",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "infrastructure_template_product_scraper_role",
+      "community": 4,
+      "norm_label": "productscraperrole (iam execution role cf resource)"
+    },
+    {
+      "label": "ProductScraperSchedule (EventBridge Monthly Rule CF Resource)",
+      "file_type": "document",
+      "source_file": "infrastructure/template.yaml",
+      "source_location": "line 61",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "infrastructure_template_product_scraper_schedule",
+      "community": 4,
+      "norm_label": "productscraperschedule (eventbridge monthly rule cf resource)"
+    },
+    {
+      "label": "esc_services.json (ESC Fallback JSON Cache)",
+      "file_type": "concept",
+      "source_file": "periodic/ESC_SERVICES_README.md",
+      "source_location": "line 4",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "periodic_esc_services_readme_esc_services_json",
+      "community": 3,
+      "norm_label": "esc_services.json (esc fallback json cache)"
+    },
+    {
+      "label": "ESC Name-Matching Filter Logic",
+      "file_type": "rationale",
+      "source_file": "periodic/ESC_SERVICES_README.md",
+      "source_location": "line 133",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "rationale": "Compares service names with four variants (full, no-prefix, Amazon-prefix, AWS-prefix) to tolerate naming inconsistencies between Directory API data and the ESC service list.",
+      "id": "periodic_esc_services_readme_filter_logic",
+      "community": 3,
+      "norm_label": "esc name-matching filter logic"
+    },
+    {
+      "label": "Lambda Deployment Instructions",
+      "file_type": "document",
+      "source_file": "periodic/lambda_deployment_instructions.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "periodic_lambda_deployment_instructions_guide",
+      "community": 4,
+      "norm_label": "lambda deployment instructions"
+    },
+    {
+      "label": "beautifulsoup4 (Python HTML Parser Dependency)",
+      "file_type": "concept",
+      "source_file": "periodic/requirements.txt",
+      "source_location": "line 1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "periodic_requirements_beautifulsoup4",
+      "community": 9,
+      "norm_label": "beautifulsoup4 (python html parser dependency)"
+    },
+    {
+      "label": "boto3 (AWS Python SDK Dependency)",
+      "file_type": "concept",
+      "source_file": "periodic/requirements.txt",
+      "source_location": "line 2",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "periodic_requirements_boto3",
+      "community": 4,
+      "norm_label": "boto3 (aws python sdk dependency)"
+    },
+    {
+      "label": "pystache (Mustache Template Engine Dependency)",
+      "file_type": "concept",
+      "source_file": "periodic/requirements.txt",
+      "source_location": "line 3",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "periodic_requirements_pystache",
+      "community": 8,
+      "norm_label": "pystache (mustache template engine dependency)"
+    },
+    {
+      "label": "requests (HTTP Client Dependency)",
+      "file_type": "concept",
+      "source_file": "periodic/requirements.txt",
+      "source_location": "line 4",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "periodic_requirements_requests",
+      "community": 3,
+      "norm_label": "requests (http client dependency)"
+    },
+    {
+      "label": "Favicon - tecRacer Orange Arrow Icon",
+      "file_type": "image",
+      "source_file": "periodic/img/favicon.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "img_favicon",
+      "community": 15,
+      "norm_label": "favicon - tecracer orange arrow icon"
+    },
+    {
+      "label": "tecRacer Brand",
+      "file_type": "concept",
+      "source_file": "periodic/img/favicon.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "img_favicon_brand_tecracer",
+      "community": 15,
+      "norm_label": "tecracer brand"
+    },
+    {
+      "label": "Orange Upper-Right Arrow Icon",
+      "file_type": "concept",
+      "source_file": "periodic/img/favicon.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "img_favicon_design_arrow",
+      "community": 15,
+      "norm_label": "orange upper-right arrow icon"
+    },
+    {
+      "label": "tecRacer Logo (Rocket)",
+      "file_type": "image",
+      "source_file": "periodic/img/tecracer_logo_rakete.png",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "description": "tecRacer company logo featuring a stylized rocket integrated into the letter R, with speed lines and circuit-board dot accents. Text reads 'tecRacer' with 'tec' in black and 'Racer' in orange. White background. Brand colors: orange (#E87722 approx) and black.",
+      "id": "img_tecracer_logo_rakete",
+      "community": 28,
+      "norm_label": "tecracer logo (rocket)"
+    }
+  ],
+  "links": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/settings.local.json",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "claude_settings_local",
+      "target": "claude_settings_local_permissions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/settings.local.json",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "claude_settings_local_permissions",
+      "target": "claude_settings_local_permissions_allow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".kilocode/package.json",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "kilocode_package",
+      "target": "kilocode_package_dependencies",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".kilocode/package.json",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "kilocode_package_dependencies",
+      "target": "kilocode_package_dependencies_kilocode_plugin",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "debug/extract_real_esc_services.py",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "debug_extract_real_esc_services",
+      "target": "debug_extract_real_esc_services_fetch_esc_services",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "debug/extract_real_esc_services.py",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "debug_extract_real_esc_services_rationale_18",
+      "target": "debug_extract_real_esc_services_fetch_esc_services",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "debug/fetch_esc_from_builder.py",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "debug_fetch_esc_from_builder",
+      "target": "debug_fetch_esc_from_builder_fetch_esc_services",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "debug/fetch_esc_from_builder.py",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "debug_fetch_esc_from_builder_rationale_9",
+      "target": "debug_fetch_esc_from_builder_fetch_esc_services",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "debug/fetch_esc_services.py",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "debug_fetch_esc_services",
+      "target": "debug_fetch_esc_services_fetch_esc_services",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "debug/fetch_esc_services.py",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "debug_fetch_esc_services_rationale_10",
+      "target": "debug_fetch_esc_services_fetch_esc_services",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "debug/fetch_products_directory.py",
+      "source_location": "L49",
+      "weight": 1.0,
+      "source": "debug_fetch_products_directory",
+      "target": "debug_fetch_products_directory_fetch_products",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "debug/fetch_products_directory.py",
+      "source_location": "L114",
+      "weight": 1.0,
+      "source": "debug_fetch_products_directory",
+      "target": "debug_fetch_products_directory_load_json",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "debug/fetch_products_directory.py",
+      "source_location": "L183",
+      "weight": 1.0,
+      "source": "debug_fetch_products_directory",
+      "target": "debug_fetch_products_directory_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "debug/fetch_products_directory.py",
+      "source_location": "L122",
+      "weight": 1.0,
+      "source": "debug_fetch_products_directory",
+      "target": "debug_fetch_products_directory_merge_lists",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "debug/fetch_products_directory.py",
+      "source_location": "L188",
+      "weight": 1.0,
+      "source": "debug_fetch_products_directory_main",
+      "target": "debug_fetch_products_directory_fetch_products",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "debug/fetch_products_directory.py",
+      "source_location": "L195",
+      "weight": 1.0,
+      "source": "debug_fetch_products_directory_main",
+      "target": "debug_fetch_products_directory_load_json",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "debug/fetch_products_directory.py",
+      "source_location": "L196",
+      "weight": 1.0,
+      "source": "debug_fetch_products_directory_main",
+      "target": "debug_fetch_products_directory_merge_lists",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "debug/test_local.py",
+      "source_location": "L30",
+      "weight": 1.0,
+      "source": "debug_test_local",
+      "target": "debug_test_local_save_html",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "deploy.sh",
+      "source_location": "L19",
+      "weight": 1.0,
+      "source": "deploy",
+      "target": "deploy_print_error",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "deploy.sh",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "deploy",
+      "target": "deploy_print_info",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "deploy.sh",
+      "source_location": "L23",
+      "weight": 1.0,
+      "source": "deploy",
+      "target": "deploy_print_warning",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "deploy.sh",
+      "source_location": "L28",
+      "weight": 1.0,
+      "source": "deploy",
+      "target": "deploy_usage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "deploy.sh",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "deploy",
+      "target": "users_larsmarin_documents_workspaces_aws_aws_periodic_table_deploy_sh__entry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "deploy.sh",
+      "source_location": "L143",
+      "weight": 1.0,
+      "context": "call",
+      "source": "users_larsmarin_documents_workspaces_aws_aws_periodic_table_deploy_sh__entry",
+      "target": "deploy_print_error",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "deploy.sh",
+      "source_location": "L84",
+      "weight": 1.0,
+      "context": "call",
+      "source": "users_larsmarin_documents_workspaces_aws_aws_periodic_table_deploy_sh__entry",
+      "target": "deploy_print_info",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "deploy.sh",
+      "source_location": "L87",
+      "weight": 1.0,
+      "context": "call",
+      "source": "users_larsmarin_documents_workspaces_aws_aws_periodic_table_deploy_sh__entry",
+      "target": "deploy_print_warning",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "deploy.sh",
+      "source_location": "L140",
+      "weight": 1.0,
+      "context": "call",
+      "source": "users_larsmarin_documents_workspaces_aws_aws_periodic_table_deploy_sh__entry",
+      "target": "deploy_usage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "infrastructure/build.sh",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "infrastructure_build",
+      "target": "users_larsmarin_documents_workspaces_aws_aws_periodic_table_infrastructure_build_sh__entry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "infrastructure/configure-s3-website.sh",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "infrastructure_configure_s3_website",
+      "target": "users_larsmarin_documents_workspaces_aws_aws_periodic_table_infrastructure_configure_s3_website_sh__entry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "infrastructure/setup-cloudfront.sh",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "infrastructure_setup_cloudfront",
+      "target": "users_larsmarin_documents_workspaces_aws_aws_periodic_table_infrastructure_setup_cloudfront_sh__entry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "infrastructure/setup-dns.sh",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "infrastructure_setup_dns",
+      "target": "users_larsmarin_documents_workspaces_aws_aws_periodic_table_infrastructure_setup_dns_sh__entry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "periodic/esc_services.json",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "periodic_esc_services",
+      "target": "periodic_esc_services_metadata",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "periodic/esc_services.json",
+      "source_location": "L105",
+      "weight": 1.0,
+      "source": "periodic_esc_services",
+      "target": "periodic_esc_services_planned_services",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "periodic/esc_services.json",
+      "source_location": "L113",
+      "weight": 1.0,
+      "source": "periodic_esc_services",
+      "target": "periodic_esc_services_regions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "periodic/esc_services.json",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "periodic_esc_services",
+      "target": "periodic_esc_services_services",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "periodic/esc_services.json",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "periodic_esc_services_metadata",
+      "target": "periodic_esc_services_metadata_description",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "periodic/esc_services.json",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "periodic_esc_services_metadata",
+      "target": "periodic_esc_services_metadata_last_updated",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "periodic/esc_services.json",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "periodic_esc_services_metadata",
+      "target": "periodic_esc_services_metadata_region",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "periodic/esc_services.json",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "periodic_esc_services_metadata",
+      "target": "periodic_esc_services_metadata_source",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "periodic/esc_services.json",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "periodic_esc_services_metadata",
+      "target": "periodic_esc_services_metadata_total_services",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "periodic/esc_services.json",
+      "source_location": "L109",
+      "weight": 1.0,
+      "source": "periodic_esc_services_planned_services",
+      "target": "periodic_esc_services_planned_services_future",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "periodic/esc_services.json",
+      "source_location": "L106",
+      "weight": 1.0,
+      "source": "periodic_esc_services_planned_services",
+      "target": "periodic_esc_services_planned_services_q1_2026",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "periodic/esc_services.json",
+      "source_location": "L114",
+      "weight": 1.0,
+      "source": "periodic_esc_services_regions",
+      "target": "periodic_esc_services_regions_available",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "periodic/esc_services.json",
+      "source_location": "L117",
+      "weight": 1.0,
+      "source": "periodic_esc_services_regions",
+      "target": "periodic_esc_services_regions_planned",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "periodic/lambda_handler.py",
+      "source_location": "L611",
+      "weight": 1.0,
+      "source": "periodic_lambda_handler",
+      "target": "periodic_lambda_handler_compute_positions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "periodic/lambda_handler.py",
+      "source_location": "L184",
+      "weight": 1.0,
+      "source": "periodic_lambda_handler",
+      "target": "periodic_lambda_handler_create_symbol",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "periodic/lambda_handler.py",
+      "source_location": "L239",
+      "weight": 1.0,
+      "source": "periodic_lambda_handler",
+      "target": "periodic_lambda_handler_get_data_from_directory",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "periodic/lambda_handler.py",
+      "source_location": "L506",
+      "weight": 1.0,
+      "source": "periodic_lambda_handler",
+      "target": "periodic_lambda_handler_get_data_from_esc",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "periodic/lambda_handler.py",
+      "source_location": "L396",
+      "weight": 1.0,
+      "source": "periodic_lambda_handler",
+      "target": "periodic_lambda_handler_get_data_from_scrape",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "periodic/lambda_handler.py",
+      "source_location": "L673",
+      "weight": 1.0,
+      "source": "periodic_lambda_handler",
+      "target": "periodic_lambda_handler_lambda_handler",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "periodic/lambda_handler.py",
+      "source_location": "L88",
+      "weight": 1.0,
+      "source": "periodic_lambda_handler",
+      "target": "periodic_lambda_handler_load_esc_services",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "periodic/lambda_handler.py",
+      "source_location": "L173",
+      "weight": 1.0,
+      "source": "periodic_lambda_handler",
+      "target": "periodic_lambda_handler_parse_name",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "periodic/lambda_handler.py",
+      "source_location": "L517",
+      "weight": 1.0,
+      "source": "periodic_lambda_handler_get_data_from_esc",
+      "target": "periodic_lambda_handler_load_esc_services",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "periodic/lambda_handler.py",
+      "source_location": "L741",
+      "weight": 1.0,
+      "source": "periodic_lambda_handler_lambda_handler",
+      "target": "periodic_lambda_handler_load_esc_services",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "periodic/lambda_handler.py",
+      "source_location": "L89",
+      "weight": 1.0,
+      "source": "periodic_lambda_handler_rationale_89",
+      "target": "periodic_lambda_handler_load_esc_services",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "periodic/lambda_handler.py",
+      "source_location": "L371",
+      "weight": 1.0,
+      "source": "periodic_lambda_handler_get_data_from_directory",
+      "target": "periodic_lambda_handler_parse_name",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "periodic/lambda_handler.py",
+      "source_location": "L479",
+      "weight": 1.0,
+      "source": "periodic_lambda_handler_get_data_from_scrape",
+      "target": "periodic_lambda_handler_parse_name",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "periodic/lambda_handler.py",
+      "source_location": "L372",
+      "weight": 1.0,
+      "source": "periodic_lambda_handler_get_data_from_directory",
+      "target": "periodic_lambda_handler_create_symbol",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "periodic/lambda_handler.py",
+      "source_location": "L480",
+      "weight": 1.0,
+      "source": "periodic_lambda_handler_get_data_from_scrape",
+      "target": "periodic_lambda_handler_create_symbol",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "periodic/lambda_handler.py",
+      "source_location": "L513",
+      "weight": 1.0,
+      "source": "periodic_lambda_handler_get_data_from_esc",
+      "target": "periodic_lambda_handler_get_data_from_directory",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "periodic/lambda_handler.py",
+      "source_location": "L681",
+      "weight": 1.0,
+      "source": "periodic_lambda_handler_lambda_handler",
+      "target": "periodic_lambda_handler_get_data_from_directory",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "periodic/lambda_handler.py",
+      "source_location": "L686",
+      "weight": 1.0,
+      "source": "periodic_lambda_handler_lambda_handler",
+      "target": "periodic_lambda_handler_get_data_from_scrape",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "periodic/lambda_handler.py",
+      "source_location": "L691",
+      "weight": 1.0,
+      "source": "periodic_lambda_handler_lambda_handler",
+      "target": "periodic_lambda_handler_get_data_from_esc",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "periodic/lambda_handler.py",
+      "source_location": "L717",
+      "weight": 1.0,
+      "source": "periodic_lambda_handler_lambda_handler",
+      "target": "periodic_lambda_handler_compute_positions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "setup-buckets.sh",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "setup_buckets",
+      "target": "setup_buckets_print_error",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "setup-buckets.sh",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "setup_buckets",
+      "target": "setup_buckets_print_info",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "setup-buckets.sh",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "setup_buckets",
+      "target": "setup_buckets_print_warning",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "setup-buckets.sh",
+      "source_location": "L26",
+      "weight": 1.0,
+      "source": "setup_buckets",
+      "target": "setup_buckets_usage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "setup-buckets.sh",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "setup_buckets",
+      "target": "users_larsmarin_documents_workspaces_aws_aws_periodic_table_setup_buckets_sh__entry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "setup-buckets.sh",
+      "source_location": "L72",
+      "weight": 1.0,
+      "context": "call",
+      "source": "users_larsmarin_documents_workspaces_aws_aws_periodic_table_setup_buckets_sh__entry",
+      "target": "setup_buckets_print_error",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "setup-buckets.sh",
+      "source_location": "L84",
+      "weight": 1.0,
+      "context": "call",
+      "source": "users_larsmarin_documents_workspaces_aws_aws_periodic_table_setup_buckets_sh__entry",
+      "target": "setup_buckets_print_info",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "setup-buckets.sh",
+      "source_location": "L102",
+      "weight": 1.0,
+      "context": "call",
+      "source": "users_larsmarin_documents_workspaces_aws_aws_periodic_table_setup_buckets_sh__entry",
+      "target": "setup_buckets_print_warning",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "setup-buckets.sh",
+      "source_location": "L69",
+      "weight": 1.0,
+      "context": "call",
+      "source": "users_larsmarin_documents_workspaces_aws_aws_periodic_table_setup_buckets_sh__entry",
+      "target": "setup_buckets_usage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 0.85,
+      "source": "readme_md_project",
+      "target": "claude_md_project"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 0.75,
+      "source": "claude_md_get_data_from_directory",
+      "target": "claude_md_get_data_from_scrape"
+    },
+    {
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "periodic/requirements.txt",
+      "source_location": "line 1",
+      "weight": 0.75,
+      "source": "periodic_requirements_beautifulsoup4",
+      "target": "claude_md_get_data_from_scrape"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": "line 106",
+      "weight": 1.0,
+      "source": "claude_md_get_data_from_esc",
+      "target": "claude_md_esc_services_json"
+    },
+    {
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "periodic/requirements.txt",
+      "source_location": "line 4",
+      "weight": 0.75,
+      "source": "periodic_requirements_requests",
+      "target": "claude_md_get_data_from_esc"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": "line 118",
+      "weight": 1.0,
+      "source": "claude_md_create_symbol",
+      "target": "claude_md_reserved_symbols"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "CLAUDE.md",
+      "source_location": "line 127",
+      "weight": 0.85,
+      "source": "claude_md_compute_positions",
+      "target": "claude_md_base_template_mustache"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": "line 170",
+      "weight": 1.0,
+      "source": "claude_md_base_template_mustache",
+      "target": "claude_md_template_mustache"
+    },
+    {
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "periodic/requirements.txt",
+      "source_location": "line 3",
+      "weight": 0.85,
+      "source": "periodic_requirements_pystache",
+      "target": "claude_md_base_template_mustache"
+    },
+    {
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "CLAUDE.md",
+      "source_location": "line 142",
+      "weight": 0.85,
+      "source": "claude_md_deploy_sh",
+      "target": "infrastructure_template_product_scraper"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "periodic/lambda_deployment_instructions.md",
+      "source_location": "line 14",
+      "weight": 1.0,
+      "source": "periodic_lambda_deployment_instructions_guide",
+      "target": "claude_md_deploy_sh"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "periodic/ESC_SERVICES_README.md",
+      "source_location": null,
+      "weight": 0.95,
+      "source": "periodic_esc_services_readme_esc_services_json",
+      "target": "claude_md_esc_services_json"
+    },
+    {
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "CONTRIBUTING.md",
+      "source_location": "line 108",
+      "weight": 0.75,
+      "source": "contributing_md_guide",
+      "target": "readme_md_project"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "ESC_SERVICES_OVERVIEW.md",
+      "source_location": "line 143",
+      "weight": 1.0,
+      "source": "esc_services_overview_md_esc_cloud",
+      "target": "esc_services_overview_md_eusc_de_east_1"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.65,
+      "source_file": "ESC_SERVICES_OVERVIEW.md",
+      "source_location": null,
+      "weight": 0.65,
+      "source": "esc_services_overview_md_esc_cloud",
+      "target": "periodic_esc_services_readme_filter_logic"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SECURITY_HEADERS.md",
+      "source_location": "line 37",
+      "weight": 1.0,
+      "source": "security_headers_md_config",
+      "target": "infrastructure_cloudfront_distribution"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SECURITY_HEADERS.md",
+      "source_location": "line 17",
+      "weight": 1.0,
+      "source": "security_headers_md_csp",
+      "target": "security_headers_md_config"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SECURITY_HEADERS.md",
+      "source_location": "line 24",
+      "weight": 1.0,
+      "source": "security_headers_md_hsts",
+      "target": "security_headers_md_config"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "SECURITY_HEADERS.md",
+      "source_location": "line 29",
+      "weight": 1.0,
+      "source": "security_headers_md_permissions_policy",
+      "target": "security_headers_md_config"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "infrastructure/cloudfront.yaml",
+      "source_location": "line 80",
+      "weight": 1.0,
+      "source": "infrastructure_cloudfront_bucket_policy",
+      "target": "infrastructure_cloudfront_distribution"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "infrastructure/cloudfront.yaml",
+      "source_location": "line 52",
+      "weight": 1.0,
+      "source": "infrastructure_cloudfront_distribution",
+      "target": "infrastructure_cloudfront_certificate"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "infrastructure/cloudfront.yaml",
+      "source_location": "line 57",
+      "weight": 1.0,
+      "source": "infrastructure_cloudfront_distribution",
+      "target": "infrastructure_cloudfront_oac"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "infrastructure/route53.yaml",
+      "source_location": "line 30",
+      "weight": 1.0,
+      "source": "infrastructure_route53_www_record",
+      "target": "infrastructure_route53_root_record"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "infrastructure/template.yaml",
+      "source_location": "line 54",
+      "weight": 1.0,
+      "source": "infrastructure_template_product_scraper",
+      "target": "infrastructure_template_product_scraper_role"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "infrastructure/template.yaml",
+      "source_location": "line 67",
+      "weight": 1.0,
+      "source": "infrastructure_template_product_scraper_schedule",
+      "target": "infrastructure_template_product_scraper"
+    },
+    {
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "periodic/lambda_deployment_instructions.md",
+      "source_location": "line 93",
+      "weight": 0.85,
+      "source": "periodic_lambda_deployment_instructions_guide",
+      "target": "infrastructure_template_product_scraper"
+    },
+    {
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "periodic/requirements.txt",
+      "source_location": "line 2",
+      "weight": 0.75,
+      "source": "periodic_requirements_boto3",
+      "target": "infrastructure_template_product_scraper"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "periodic/ESC_SERVICES_README.md",
+      "source_location": "line 133",
+      "weight": 1.0,
+      "source": "periodic_esc_services_readme_filter_logic",
+      "target": "periodic_esc_services_readme_esc_services_json"
+    },
+    {
+      "from": "img_favicon",
+      "to": "img_favicon_brand_tecracer",
+      "relation": "REPRESENTS_BRAND",
+      "provenance": "INFERRED",
+      "confidence_score": 0.85,
+      "note": "Orange arrow pointing upper-right matches tecRacer corporate logo style; project author email domain lmarin@tecracer.de confirms affiliation",
+      "source": "img_favicon",
+      "target": "img_favicon_brand_tecracer"
+    },
+    {
+      "from": "img_favicon",
+      "to": "img_favicon_design_arrow",
+      "relation": "IS_VISUALLY",
+      "provenance": "EXTRACTED",
+      "confidence_score": 1.0,
+      "note": "Favicon is an orange diagonal arrow pointing upper-right on white background",
+      "source": "img_favicon",
+      "target": "img_favicon_design_arrow"
+    },
+    {
+      "from": "img_favicon_design_arrow",
+      "to": "img_favicon_brand_tecracer",
+      "relation": "IS_LOGO_OF",
+      "provenance": "INFERRED",
+      "confidence_score": 0.85,
+      "note": "Orange upper-right arrow is tecRacer's recognizable logo mark",
+      "source": "img_favicon_design_arrow",
+      "target": "img_favicon_brand_tecracer"
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "esc_data_pipeline",
+      "label": "ESC Service Filtering Pipeline",
+      "nodes": [
+        "claude_md_get_data_from_esc",
+        "periodic_esc_services_readme_esc_services_json",
+        "esc_services_overview_md_esc_cloud",
+        "periodic_esc_services_readme_filter_logic"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.95,
+      "source_file": "CLAUDE.md"
+    },
+    {
+      "id": "lambda_deploy_schedule_flow",
+      "label": "Lambda Deployment and Monthly Schedule Flow",
+      "nodes": [
+        "claude_md_deploy_sh",
+        "infrastructure_template_product_scraper",
+        "infrastructure_template_product_scraper_schedule",
+        "infrastructure_template_product_scraper_role"
+      ],
+      "relation": "form",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "infrastructure/template.yaml"
+    },
+    {
+      "id": "cloudfront_secure_delivery",
+      "label": "CloudFront Secure Content Delivery Setup",
+      "nodes": [
+        "infrastructure_cloudfront_distribution",
+        "infrastructure_cloudfront_oac",
+        "infrastructure_cloudfront_bucket_policy",
+        "security_headers_md_config"
+      ],
+      "relation": "implement",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "infrastructure/cloudfront.yaml"
+    }
+  ],
+  "built_at_commit": "393c16900c800f631c8dfe48183b6c61e0340c45"
+}
