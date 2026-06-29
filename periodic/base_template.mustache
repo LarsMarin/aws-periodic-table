@@ -599,23 +599,15 @@
       }
     }
     
+    function normalizeESC(name) {
+      return name.trim()
+        .replace(/^(AWS|Amazon)\s+/, '')
+        .replace(/\s*\([^)]+\)\s*$/, '')
+        .trim();
+    }
     function isESCService(serviceName) {
       if (!ESC_SERVICES || ESC_SERVICES.length === 0) return false;
-      
-      // Normalize service name for comparison
-      const normalized = serviceName.trim();
-      
-      // Check exact match
-      if (ESC_SERVICES.includes(normalized)) return true;
-      
-      // Check with different prefixes
-      const withoutPrefix = normalized.replace(/^(AWS|Amazon)\s+/, '');
-      const withAWS = 'AWS ' + withoutPrefix;
-      const withAmazon = 'Amazon ' + withoutPrefix;
-      
-      return ESC_SERVICES.includes(withoutPrefix) ||
-             ESC_SERVICES.includes(withAWS) ||
-             ESC_SERVICES.includes(withAmazon);
+      return ESC_SERVICES.includes(normalizeESC(serviceName));
     }
     
     // Toggle regions display

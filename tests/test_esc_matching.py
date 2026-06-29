@@ -66,3 +66,28 @@ def test_check_esc_freshness_returns_none_for_empty():
     from lambda_handler import check_esc_freshness
     assert check_esc_freshness("") is None
     assert check_esc_freshness(None) is None
+
+
+def test_normalize_for_esc_strips_parenthetical():
+    """_normalize_for_esc removes trailing (ACRONYM) suffixes before matching."""
+    from lambda_handler import _normalize_for_esc
+    assert _normalize_for_esc("AWS Key Management Service (KMS)") == "Key Management Service"
+    assert _normalize_for_esc("Amazon Simple Storage Service (S3)") == "Simple Storage Service"
+    assert _normalize_for_esc("AWS Cloud Development Kit (AWS CDK)") == "Cloud Development Kit"
+
+
+def test_esc_aliases_cover_abbreviated_names():
+    """EC2/VPC/RDS/VPN must match their ESC full-name equivalents via alias dict."""
+    from lambda_handler import _ESC_NAME_ALIASES, _normalize_for_esc
+    # Build a fake normalized_esc matching what docs.aws.eu returns
+    esc_entries = {
+        "Amazon Elastic Compute Cloud",
+        "Amazon Virtual Private Cloud",
+        "Amazon Relational Database Service",
+        "AWS Virtual Private Network",
+    }
+    normalized_esc = {_normalize_for_esc(s) for s in esc_entries}
+
+    for short_name in ["EC2", "VPC", "RDS", "VPN"]:
+        alias = _ESC_NAME_ALIASES.get(_normalize_for_esc(short_name))
+        assert alias in normalized_esc, f"{short_name!r} alias {alias!r} not in normalized ESC"

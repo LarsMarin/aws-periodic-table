@@ -186,6 +186,22 @@ def strip_prefix(name):
     return re.sub(r'^\s*(AWS|Amazon)\s+', '', name).strip()
 
 
+def _normalize_for_esc(name):
+    """Strip prefix and trailing parenthetical abbreviation, e.g. '(S3)', '(AWS CDK)'."""
+    n = strip_prefix(name)
+    return re.sub(r'\s*\([^)]+\)\s*$', '', n).strip()
+
+
+# ponytail: explicit alias dict for services where Directory API uses abbreviations
+# but ESC list uses full names. Only needed when normalization cannot bridge the gap.
+_ESC_NAME_ALIASES = {
+    'EC2': 'Elastic Compute Cloud',
+    'RDS': 'Relational Database Service',
+    'VPC': 'Virtual Private Cloud',
+    'VPN': 'Virtual Private Network',
+}
+
+
 def check_esc_freshness(updated_str):
     """Return warning string if esc_services.json fallback is >30 days old, else None."""
     if not updated_str:
@@ -636,18 +652,19 @@ def get_data_from_esc():
         print("Warning: No ESC services loaded, returning empty periodic table")
         return periodic
     
-    # Build normalized ESC set once for efficient matching
-    normalized_esc = {strip_prefix(s) for s in esc_services}
+    # Build normalized ESC set: strip prefix + trailing parenthetical abbreviation
+    normalized_esc = {_normalize_for_esc(s) for s in esc_services}
 
     # Filtere die AWS-Daten basierend auf ESC-Verfügbarkeit
     for category in aws_data.get('categories', []):
         filtered_services = []
 
         for service in category.get('services', []):
-            # Normalize both sides: strip AWS/Amazon prefix before comparing
+            svc_name = _normalize_for_esc(service['name'])
             is_available = (
-                strip_prefix(service.get('full_name', '')) in normalized_esc
-                or strip_prefix(service['name']) in normalized_esc
+                _normalize_for_esc(service.get('full_name', '')) in normalized_esc
+                or svc_name in normalized_esc
+                or _ESC_NAME_ALIASES.get(svc_name) in normalized_esc
             )
             
             if is_available:
@@ -845,9 +862,16 @@ def lambda_handler(event, context):
             # ESC Filter und Global Regions nur für Global-Tabs (scrape und directory)
             if source in ['scrape', 'directory']:
                 periodic_data['show_esc_filter'] = True
-                # ESC Services als JSON für JavaScript
-                esc_services_list = list(load_esc_services())
-                periodic_data['esc_services_json'] = json.dumps(esc_services_list)
+                # Build normalized ESC set for JS filter.
+                # Both sides (ESC names and service full_name in JS) are normalized:
+                # strip AWS/Amazon prefix + strip trailing parenthetical abbreviation.
+                # Alias keys (EC2, VPC, RDS, VPN) are added so abbreviated full_names match.
+                raw_esc = load_esc_services()
+                norm_esc = {_normalize_for_esc(s) for s in raw_esc}
+                for alias_key, alias_target in _ESC_NAME_ALIASES.items():
+                    if alias_target in norm_esc:
+                        norm_esc.add(alias_key)
+                periodic_data['esc_services_json'] = json.dumps(sorted(norm_esc))
                 
                 # Global Regions für Global-Tabs mit technischen Namen
                 global_regions = [
